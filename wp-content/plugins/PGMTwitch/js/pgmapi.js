@@ -2,7 +2,7 @@
 	var channelname = 'puregamemedia'; // nom de la chaine à suivre
 	var timecookie = 15;  // durée de vie du cookie en jours	
 	var accesstoken = readCookie("PGMCookieuser"); // lecture du cookie
-	var redirect = 'http://localhost/test/dashboard/'; // redirection défini dans l'api
+	var redirect = 'http://localhost/PGMWP/dashboard/'; // redirection défini dans l'api
 	var client_id = 't6a5c7t3yr8usx1yh3kuse4w3uwlq5r'; // client id définie dans l'api"
 	var username;
 

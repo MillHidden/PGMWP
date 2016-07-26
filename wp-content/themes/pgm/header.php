@@ -117,7 +117,7 @@ $(document).ready(function(){
           <a href="<?php echo wp_logout_url( home_url() ); ?>" class="btn btn-sample btn-border btn-sample-login">
             <span class="glyphicon glyphicon-log-in"></span> logout
           </a>
-          <a href="/test/dashboard" class="btn btn-sample btn-border btn-sample-register" href="#">
+          <a href="<?php echo home_url(); ?>/dashboard" class="btn btn-sample btn-border btn-sample-register" href="#">
             <span class="glyphicon glyphicon-user"></span> Dashboard
           </a>
          
@@ -130,7 +130,7 @@ $(document).ready(function(){
             <span class="glyphicon glyphicon-user"></span> Inscription
           </a>
         <?php } ?>
-        </div>
+        </div>        
       </div>
     </header> 
 	

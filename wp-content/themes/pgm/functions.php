@@ -190,7 +190,7 @@ add_action('wp_login', 'myEndSession');
 	JS programme / ajax
 -------------------------------------------------------------------------------*/
 
-require_once( $_SERVER['DOCUMENT_ROOT'] . '/test/wp-load.php' );
+require_once( $_SERVER['DOCUMENT_ROOT'] . '/PGMWP/wp-load.php' );
 
 add_action( 'wp_ajax_update', 'update' );
 add_action( 'wp_ajax_nopriv_update', 'update' ); // This lines it's because we are using AJAX on the FrontEnd.
