@@ -1,14 +1,28 @@
 -$(document).ready(function($) {
 	var channelname = 'puregamemedia'; // nom de la chaine à suivre
 	var timecookie = 15;  // durée de vie du cookie en jours	
-	var accesstoken = readCookie("PGMCookieuser"); // lecture du cookie
+	//var accesstoken = readCookie("PGMCookieuser"); // lecture du cookie
 	var redirect = 'http://localhost/PGMWP/dashboard/'; // redirection défini dans l'api
 	var client_id = 't6a5c7t3yr8usx1yh3kuse4w3uwlq5r'; // client id définie dans l'api"
 	var username;
+	var accesstoken;
+	$.post(
+		MyAjax.ajaxurl, {
+			'action'		: 'getinfo',
+			'target'		: 'user',
+			'elem_id'		: $("#user_id").val(),
+			'id'			: 'twitchToken',
+			'value'			: accesstoken,
+			'securite_nonce': $("#securite_nonce").val(),
+		})
+		.done(function(data, status, xhr) {
+			data = JSON.parse(data);
+			accesstoken = data.value;			
+	});
 
 	$('#follow').html("").hide();
 
-	/* initialisation api twitch */		
+	/* initialisation api twitch */	
 	Twitch.init({
 			clientId: client_id,
 			redirect_uri: redirect
@@ -16,25 +30,53 @@
 		function(error, status){
 		if (error){
 			$('#login').html("fail");
-
 		}else {
-
 			$('#login').click(function(){
 				Twitch.login({
 					scope: ['user_read', 'user_follows_edit']					
 				});
+			});
+
+			$('#logout').click(function(){
+				Twitch.logout(function(error) {
+				    // the user is now logged out
+				    $('#follow').hide();
+				    $.post(
+	          			MyAjax.ajaxurl, {
+	          				'action'		: 'update',
+	          				'target'		: 'user',
+	          				'elem_id'		: $("#user_id").val(),
+	          				'id'			: 'twitchToken',
+	          				'value'			: "undefined",
+	          				'securite_nonce': $("#securite_nonce").val(),
+	          			}
+	          		);	
+				});
 			});					
 			
-			if ((accesstoken == null) || (accesstoken == "undefined")){
+			if ((accesstoken == null) || (accesstoken == "undefined") || accesstoken == ""){				
 				if (status.authenticated){
-					$('#login').html("").hide();					
 					Twitch.api({method: 'user'}, function(error, user) {						
 						username = user.display_name;
 						getFollow(username, channelname);						
 						$('#follow').show();
 		          		accesstoken = Twitch.getToken();
-		          		createCookie("PGMCookieuser", accesstoken, timecookie);
-		          	});          	         	       	
+		          		$.post(
+		          			MyAjax.ajaxurl, {
+		          				'action'		: 'update',
+		          				'target'		: 'user',
+		          				'elem_id'		: $("#user_id").val(),
+		          				'id'			: 'twitchToken',
+		          				'value'			: accesstoken,
+		          				'securite_nonce': $("#securite_nonce").val(),
+		          			}
+		          		);		
+		          	});
+		          	$('#login').html("").hide();					          	         	       	
+				} else {
+					Twitch.login({
+						scope: ['user_read', 'user_follows_edit']					
+					});
 				}								
 			}else{				
 				url = "https://api.twitch.tv/kraken/?oauth_token=" + accesstoken;
@@ -45,11 +87,19 @@
 					if (data.token.valid) {
 						username = data.token.user_name;
 						getFollow(username, channelname);
-		          		$('#follow').show();
+						$('#follow').show();
 		          		$('#login').html("").hide();
-		          		          		
-					}else{
-						eraseCookie("PGMCookieuser");							
+		          		$.post(
+		          			MyAjax.ajaxurl, {
+		          				'action'		: 'update',
+		          				'target'		: 'user',
+		          				'elem_id'		: $("#user_id").val(),
+		          				'id'			: 'twitchToken',
+		          				'value'			: accesstoken,
+		          				'securite_nonce': $("#securite_nonce").val(),
+		          				dataType		: "json",
+		          			}
+		          		);   		
 					}
 				});
 			}
@@ -95,7 +145,7 @@ function getFollow(username, channelname){
 	;	
 }
 
-function createCookie(name, value, days) {
+/*function createCookie(name, value, days) {
     var expires;
 
     if (days) {
@@ -121,4 +171,4 @@ function readCookie(name) {
 
 function eraseCookie(name) {
     createCookie(name, "", -1);
-}
+}*/

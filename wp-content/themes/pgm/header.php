@@ -114,7 +114,7 @@ $(document).ready(function(){
         <div id="logindiv" class="col-md-2 btn-group box-login">
         <?php if (is_user_logged_in()) { ?>
           
-          <a href="<?php echo wp_logout_url( home_url() ); ?>" class="btn btn-sample btn-border btn-sample-login">
+          <a href="<?php echo wp_logout_url( home_url() ); ?>" class="btn btn-sample btn-border btn-sample-login" id="logout">
             <span class="glyphicon glyphicon-log-in"></span> logout
           </a>
           <a href="<?php echo home_url(); ?>/dashboard" class="btn btn-sample btn-border btn-sample-register" href="#">
@@ -141,7 +141,7 @@ $(document).ready(function(){
             <div class="container-fluid">
               <ul class="nav navbar-nav navbar-left">
                 <li id="select">
-                  <a href="index.html"><img src="<?php echo get_bloginfo('template_directory');?>/images/home.png" alt=""></a>
+                  <a href="<?php echo home_url(); ?>"><img src="<?php echo get_bloginfo('template_directory');?>/images/home.png" alt=""></a>
                 </li>
                 <li class="divider">
                   <a href="programme.html">programme</a>

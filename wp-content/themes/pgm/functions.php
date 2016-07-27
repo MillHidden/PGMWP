@@ -91,6 +91,7 @@ function pgm_scripts() {
 	wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'jquery' ) );
 
 	wp_localize_script( 'my-ajax-request' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
+	wp_localize_script( 'pgm-twitchapi' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
 }
 add_action( 'wp_enqueue_scripts', 'pgm_scripts' );
 
@@ -195,6 +196,9 @@ require_once( $_SERVER['DOCUMENT_ROOT'] . '/PGMWP/wp-load.php' );
 add_action( 'wp_ajax_update', 'update' );
 add_action( 'wp_ajax_nopriv_update', 'update' ); // This lines it's because we are using AJAX on the FrontEnd.
 
+add_action( 'wp_ajax_getinfo', 'getinfo' );
+add_action( 'wp_ajax_nopriv_getinfo', 'getinfo' ); // This lines it's because we are using AJAX on the FrontEnd.
+
 //wp_localize_script (  'my_action' ,  'ajaxurl' , array (  'ajaxurl'  => admin_url (   'admin-ajax.php'  )  )  );
 
 function update(){	
@@ -202,7 +206,7 @@ function update(){
 		&& !empty($_POST['target']) 
 		&& (isset($_POST['securite_nonce'])) 
 		&& (wp_verify_nonce($_POST['securite_nonce'], 'securite-nonce'))) {		
-			// Le formulaire est validé et sécurisé, suite du traitement
+			// Le formulaire est validé et sécurisé, suite du traitement		
 
 		switch ($_POST['target']) {
 			case 'user' :
@@ -260,9 +264,22 @@ function update(){
 							'complete',
 							$complete
 						);
-					}	
+					}
 
-					$reponse = new stdClass();
+					$prev = get_user_meta($_POST['elem_id'], $_POST['id'], true);
+					if ($prev === null) {
+						add_user_meta($_POST['elem_id'],
+							$_POST['id'],
+							$_POST['value']
+						);
+					} else {
+						update_user_meta($_POST['elem_id'],
+							$_POST['id'],
+							$_POST['value']
+						);
+					}
+
+					$response = new stdClass();
 					$response->valid = true;
 					$response->value = $_POST['value'];
 					$response->complete = $complete;
@@ -272,16 +289,86 @@ function update(){
 
 				break;
 			default :
-				echo ("error");
-				return ("false");
+				$response = new stdClass();
+				$response->valid = false;
+				$response->error = "error";
+				echo (json_encode($response));	
 				break;
 		}	
 
  
 	} else {
-			echo 'Erreur dans le formulaire';
-			return ("false");
-			exit; // le formulaire est refusé
+			$response = new stdClass();
+			$response->valid = false;
+			$response->error = "Erreur dans le formulaire";
+			echo (json_encode($response));							
+	}		
+	/*} else {
+		$id = $_POST['pk'];
+		$data_edited = $_POST['value'];
+		$sql = $_POST['sql'];
+		    
+		     Check submitted value
+		    
+		   if(!is_null($id))
+		    {
+		    	global $wpdb;
+		               // $wpdb->insert('events', array(
+						//	'id' => '20',
+						//	'description' => $description,
+						//	'id_streamer' => $id_streamer,
+		                 //   'date' => '2016-07-10')
+					//);
+
+				$wpdb->update('events', array($sql => $data_edited), array("id" => $id));
+
+			}
+		die();
+		echo ("other");
+	}*/
+
+	wp_die();
+}
+
+
+function getinfo(){	
+	if (isset($_POST['target']) 
+		&& !empty($_POST['target']) 
+		&& (isset($_POST['securite_nonce'])) 
+		&& (wp_verify_nonce($_POST['securite_nonce'], 'securite-nonce'))) {		
+			// Le formulaire est validé et sécurisé, suite du traitement		
+
+		switch ($_POST['target']) {
+			case 'user' :
+				if(isset($_POST['id']) 
+					&& !empty($_POST['id'])					
+					&& isset($_POST['elem_id']) 
+					&& !empty($_POST['elem_id'])) {
+
+					$userdata = get_user_meta( $_POST['elem_id'], $_POST['id'], true);
+
+					$response = new stdClass();
+					$response->valid = true;
+					$response->value = $userdata;
+					echo (json_encode($response));				
+					
+				}
+
+				break;
+			default :
+				$response = new stdClass();
+				$response->valid = false;
+				$response->error = "error";
+				echo (json_encode($response));	
+				break;
+		}	
+
+ 
+	} else {
+			$response = new stdClass();
+			$response->valid = false;
+			$response->error = "Erreur dans le formulaire";
+			echo (json_encode($response));							
 	}		
 	/*} else {
 		$id = $_POST['pk'];
