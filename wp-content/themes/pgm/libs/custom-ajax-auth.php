@@ -4,7 +4,7 @@ function ajax_auth_init(){
 	wp_register_style( 'ajax-auth-style', get_template_directory_uri() . '/css/ajax-auth-style.css' );
 	wp_enqueue_style('ajax-auth-style');
 	
-	wp_register_script('validate-script', get_template_directory_uri() . '/js/jquery.validate.js', array('jquery') ); 
+	wp_register_script('validate-script', get_template_directory_uri() . '/js/jquery.validate.min.js', array('jquery') ); 
     wp_enqueue_script('validate-script');
 
     wp_register_script('ajax-auth-script', get_template_directory_uri() . '/js/ajax-auth-script.js', array('jquery') ); 

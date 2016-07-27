@@ -21,12 +21,6 @@
 
 <?php do_shortcode('[contentblock id=1]'); ?>
 
-<?php 
-if (!current_user_can( 'manage_options' )) {
-        add_filter('show_admin_bar', '__return_false');
-}
-?>
-
 <script type="text/javascript">
 $(document).ready(function() {
   // Custom 

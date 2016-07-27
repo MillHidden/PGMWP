@@ -1,7 +1,9 @@
 
 jQuery(document).ready(function ($) {
+
     // Display form from link inside a popup
-	$('#pop_login, #pop_signup').live('click', function (e) {
+	$('#pop_login, #pop_signup').on('click', function (e) {
+        console.log("popup");
         formToFadeOut = $('form#inscription');
         formtoFadeIn = $('form#connexion');
         if ($(this).attr('id') == 'pop_signup') {
@@ -11,12 +13,14 @@ jQuery(document).ready(function ($) {
         formToFadeOut.fadeOut(500, function () {
             formtoFadeIn.fadeIn();
         })
+
         return false;
     });
 
 	// Close popup
     $(document).on('click', '.login_overlay, .close', function () {
-		$('form#connexion, form#inscription').fadeOut(500, function () {
+		console.log("popup");
+        $('form#connexion, form#inscription').fadeOut(500, function () {
             $('.login_overlay').remove();
         });
         return false;
@@ -35,12 +39,13 @@ jQuery(document).ready(function ($) {
 	// Perform AJAX login/register on form submit
 	$('form#connexion, form#inscription').on('submit', function (e) {
         if (!$(this).valid()) return false;
-        $('p.status', this).show().text(ajax_auth_object.loadingmessage);
+        //$('p.status', this).show().text(ajax_auth_object.loadingmessage);
 		action = 'ajaxlogin';
 		username = 	$('form#connexion #username').val();
 		password = $('form#connexion #password').val();
 		email = '';
 		security = $('form#connexion #security').val();
+
 		if ($(this).attr('id') == 'inscription') {
 			action = 'ajaxregister';
 			username = $('#signonname').val();
@@ -71,14 +76,14 @@ jQuery(document).ready(function ($) {
     });
 	
 	// Client side form validation
-   if (jQuery("#inscription").length) 
-		jQuery("#inscription").validate(
+   if ($("#inscription").length) 
+		$("#inscription").validate(
 		{ 
 			rules:{
 			password2:{ equalTo:'#signonpassword' 
 			}	
 		}}
 		);
-    else if (jQuery("#connexion").length) 
-		jQuery("#connexion").validate();
+    else if ($("#connexion").length) 
+		$("#connexion").validate();
 });

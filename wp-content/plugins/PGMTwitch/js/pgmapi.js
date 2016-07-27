@@ -17,7 +17,8 @@
 		})
 		.done(function(data, status, xhr) {
 			data = JSON.parse(data);
-			accesstoken = data.value;			
+			accesstoken = data.value;
+			alert (accesstoken);			
 	});
 
 	$('#follow').html("").hide();
@@ -40,21 +41,11 @@
 			$('#logout').click(function(){
 				Twitch.logout(function(error) {
 				    // the user is now logged out
-				    $('#follow').hide();
-				    $.post(
-	          			MyAjax.ajaxurl, {
-	          				'action'		: 'update',
-	          				'target'		: 'user',
-	          				'elem_id'		: $("#user_id").val(),
-	          				'id'			: 'twitchToken',
-	          				'value'			: "undefined",
-	          				'securite_nonce': $("#securite_nonce").val(),
-	          			}
-	          		);	
-				});
+				    $('#follow').hide();				    
+				});				
 			});					
 			
-			if ((accesstoken == null) || (accesstoken == "undefined") || accesstoken == ""){				
+			if ((accesstoken == null) || (accesstoken == "")) {				
 				if (status.authenticated){
 					Twitch.api({method: 'user'}, function(error, user) {						
 						username = user.display_name;
@@ -73,13 +64,15 @@
 		          		);		
 		          	});
 		          	$('#login').html("").hide();					          	         	       	
-				} else {
-					Twitch.login({
-						scope: ['user_read', 'user_follows_edit']					
-					});
-				}								
-			}else{				
+				}						
+			}else if (accesstoken == "undefined") {
+				Twitch.login({
+					scope: ['user_read', 'user_follows_edit']					
+				});
+			}
+			else {
 				url = "https://api.twitch.tv/kraken/?oauth_token=" + accesstoken;
+				alert ("here");
 				$.ajax({
 					url : url,
 					dataType : "json"
