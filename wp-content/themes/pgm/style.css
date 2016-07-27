@@ -1203,3 +1203,7 @@ background-size: 100%;
 @media (max-width: 1280px) {
   
 }
+
+#follow {
+	display: none;
+}

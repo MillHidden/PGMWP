@@ -19,6 +19,9 @@ if (function_exists('add_image_size')) {
 }
 
 function pgm_setup() {
+
+	require_once( get_template_directory() . '/libs/custom-ajax-auth.php' );
+
 	/*
 	 * Make theme available for translation.
 	 * Translations can be filed in the /languages/ directory.
@@ -81,7 +84,7 @@ function pgm_scripts() {
 	wp_enqueue_script( 'pgm-carousel', get_template_directory_uri() . '/js/carousel.js', array('jquery2'), '20151215', true );
 	wp_enqueue_script( 'pgm-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array('jquery2'), '20151215', true );
 	wp_enqueue_script( 'twitchSDK', 'https://ttv-api.s3.amazonaws.com/twitch.min.js', array('jquery2'), '', true);
-	wp_enqueue_script( 'pgm-twitchapi', '/wp-content/plugins/PGMTwitch/js/pgmapi.js', array('jquery2', 'twitchSDK'), '', true);
+	
 	wp_enqueue_script( 'pgm-twitchdatas', '/wp-content/plugins/PGMTwitch/js/pgmdatas.js', array('jquery2', 'twitchSDK'), '', true);
 	wp_enqueue_script( 'jeditable', get_template_directory_uri() . '/js/jquery.jeditable.min.js', array('jquery2'), '', true);
 	//if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -89,9 +92,12 @@ function pgm_scripts() {
 	//}
 
 	wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'jquery' ) );
-
 	wp_localize_script( 'my-ajax-request' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
-	wp_localize_script( 'pgm-twitchapi' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
+
+	if (is_user_logged_in()) {
+		wp_enqueue_script( 'pgm-twitchapi', '/wp-content/plugins/PGMTwitch/js/pgmapi.js', array('jquery2', 'twitchSDK'), '', true);
+		wp_localize_script( 'pgm-twitchapi' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'pgm_scripts' );
 
@@ -197,7 +203,6 @@ add_action( 'wp_ajax_update', 'update' );
 add_action( 'wp_ajax_nopriv_update', 'update' ); // This lines it's because we are using AJAX on the FrontEnd.
 
 add_action( 'wp_ajax_getinfo', 'getinfo' );
-add_action( 'wp_ajax_nopriv_getinfo', 'getinfo' ); // This lines it's because we are using AJAX on the FrontEnd.
 
 //wp_localize_script (  'my_action' ,  'ajaxurl' , array (  'ajaxurl'  => admin_url (   'admin-ajax.php'  )  )  );
 
@@ -429,5 +434,3 @@ function redirect_non_authorized_user() {
 		exit();
 	}
 }
-
-require_once( get_template_directory() . '/libs/custom-ajax-auth.php' );
