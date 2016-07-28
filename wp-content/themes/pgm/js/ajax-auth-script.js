@@ -38,15 +38,18 @@ jQuery(document).ready(function ($) {
 
 	// Perform AJAX login/register on form submit
 	$('form#connexion, form#inscription').on('submit', function (e) {
-        if (!$(this).valid()) return false;
-        //$('p.status', this).show().text(ajax_auth_object.loadingmessage);
+        
+        if (!$(this).valid()){
+            return false;
+        } 
+        $('p.status', this).show().text(ajax_auth_object.loadingmessage);
 		action = 'ajaxlogin';
 		username = 	$('form#connexion #username').val();
 		password = $('form#connexion #password').val();
 		email = '';
 		security = $('form#connexion #security').val();
 
-		if ($(this).attr('id') == 'inscription') {
+		if ($(this).attr('id') == 'inscription') {            
 			action = 'ajaxregister';
 			username = $('#signonname').val();
 			password = $('#signonpassword').val();
@@ -54,7 +57,7 @@ jQuery(document).ready(function ($) {
         	security = $('#signonsecurity').val();	
 		}  
 		ctrl = $(this);
-		$.ajax({
+        $.ajax({
             type: 'POST',
             dataType: 'json',
             url: ajax_auth_object.ajaxurl,
@@ -71,19 +74,46 @@ jQuery(document).ready(function ($) {
                     document.location.href = ajax_auth_object.redirecturl;
                 }
             }
+
         });
         e.preventDefault();
     });
 	
 	// Client side form validation
    if ($("#inscription").length) 
-		$("#inscription").validate(
-		{ 
-			rules:{
-			password2:{ equalTo:'#signonpassword' 
-			}	
-		}}
-		);
+		$("#inscription").validate({
+			rules: {
+                signonname: "required",
+                email: {
+                    required: true,
+                    email: true,
+                },
+                signonpassword: "required",
+                password2: { 
+                    required: true,                    
+                    equalTo: "#signonpassword",
+                },
+                check: {
+                    required: true,
+                }
+            },
+            messages: {
+                signonname: "entrer un username",
+                email: {
+                    required: "Ce champ est obligatoire",
+                    email: "entrer une adresse mail valide",
+                },
+                signonpassword: "Ce champ est obligatoire",
+                password2: {
+                    required: "Ce champ est obligatoire",
+                    equalTo: "Les deux mots de passe doivent correspondre",
+                },
+                check: {
+                    required: "Vous devez approuver le règlement",
+                }
+            }
+
+        });
     else if ($("#connexion").length) 
 		$("#connexion").validate();
 });

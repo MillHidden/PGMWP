@@ -6,14 +6,15 @@
     <p class="status"></p>
     <?php wp_nonce_field('ajax-register-nonce', 'signonsecurity'); ?>         
     <label for="signonname">Username</label>
-    <input id="signonname" type="text" name="signonname" class="required">
+    <input id="signonname" type="text" name="signonname" >
     <label for="email">Email</label>
-    <input id="email" type="text" class="required email" name="email">
+    <input id="email" type="text" name="email">
     <label for="signonpassword">Mot de passe</label>
-    <input id="signonpassword" type="password" class="required" name="signonpassword" >
+    <input id="signonpassword" type="password" name="signonpassword" >
     <label for="password2">Confirmer le mot de passe</label>
-    <input type="password" id="password2" class="required" name="password2">
-    <input class="submit_button" type="submit" value="SIGNUP">
+    <input type="password" id="password2" name="password2">
+    J'accepte le <a href="#">règlement</a> du site PureGameMedia <input type="checkbox" id="check" name="check" /> 
+    <input class="submit_button" type="submit" value="Inscription">
     <a class="close" href="">(fermer)</a>    
 </form>
 
@@ -29,7 +30,7 @@
     <input id="password" type="password" class="required" name="password">
     <a class="text-link" href="<?php
         echo wp_lostpassword_url(); ?>">Mot de passe perdu?</a>
-    <input class="submit_button" type="submit" value="LOGIN">
+    <input class="submit_button" type="submit" value="Se connecter">
 	<a class="close" href="">(fermer)</a>    
 </form>
  
