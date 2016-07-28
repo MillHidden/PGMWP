@@ -8,7 +8,7 @@
  */
  
  /** PAGE PRINCIPALE **/
-$userdata = get_userdata( get_current_user_id() );
+
 ?>
 
 <div id="donations" class="modal fade" role="dialog">
@@ -140,9 +140,20 @@ $userdata = get_userdata( get_current_user_id() );
                 </div>
                 <div class="col-md-10">
                   <div class="row">
-                    <?php echo '<input type="hidden" value="6" id="user_id" />' ;?>
-                    <?php echo '<input type="hidden" value="' . wp_create_nonce('securite-nonce') . '" id="securite_nonce" />';?>
+                    <?php if (is_user_logged_in()) {
+                      $userdata = get_userdata( get_current_user_id() );
+                      echo '<div id="follow" class="col-md-4 text-right-bloc">';
+                        echo '<input type="hidden" value="6" id="user_id" />';
+                        echo '<input type="hidden" value="' . wp_create_nonce('securite-nonce') . '" id="securite_nonce" />';
                     
+                      echo '</div>';
+                      } else {
+                        echo '<div class="col-md-4 text-right-bloc">';
+                        echo '<span class="glyphicon glyphicon-heart"></span><a id="show_login" href="">follow</a>';                            
+                        echo '</div>';
+                      }?>
+                    
+
                     <div id="follow" class="col-md-4 text-right-bloc">
 
                     </div>

@@ -4,8 +4,6 @@
 	var username;
 	var accesstoken;
 
-	$('#follow').html("").hide();
-
 	$.post(
 		MyAjax.ajaxurl, {
 			'action'		: 'getinfo',
