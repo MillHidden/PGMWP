@@ -8,6 +8,7 @@
  */
  
  /** PAGE PRINCIPALE **/
+$userdata = get_userdata( get_current_user_id() );
 ?>
 
 <div id="donations" class="modal fade" role="dialog">
@@ -139,8 +140,11 @@
                 </div>
                 <div class="col-md-10">
                   <div class="row">
+                    <?php echo '<input type="hidden" value="6" id="user_id" />' ;?>
+                    <?php echo '<input type="hidden" value="' . wp_create_nonce('securite-nonce') . '" id="securite_nonce" />';?>
+                    
                     <div id="follow" class="col-md-4 text-right-bloc">
-                      
+
                     </div>
                     <div class="col-md-4 text-right-bloc">
                       <a type="button" data-toggle="modal" data-target="#donations"><span class="glyphicon glyphicon-eur"></span> donation </a>

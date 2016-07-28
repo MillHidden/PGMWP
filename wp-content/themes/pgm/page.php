@@ -21,9 +21,7 @@ if ( is_page('dashboard')) {
 	else {
 		get_header(); 
 		get_template_part( 'template-parts/content', 'header' );
-	    get_template_part( 'template-parts/page/content', 'dashboard' );
-	    $enable = true;
-	    $page_css = 'dashboard.css';	    
+	    get_template_part( 'template-parts/page/content', 'dashboard' );	    
 	}
 }
 
@@ -32,19 +30,10 @@ else {
 	get_header(); 
 	get_template_part( 'template-parts/content', 'header' );
 
-
 	if (is_page('streamers')) {
 	   get_template_part( 'template-parts/page/content', 'streamers' );
-	   $enable = true;
-	   $page_css = 'streamers.css';
-	   $test = 'test';
-
 	}
 }
-
-
-
-
 	
 get_template_part( 'template-parts/content', 'footer' );
 get_footer();

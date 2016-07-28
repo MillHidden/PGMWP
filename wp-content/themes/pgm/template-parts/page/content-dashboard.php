@@ -70,8 +70,6 @@ $userdata = get_userdata( get_current_user_id() );
 	</div>	
 
 	<div class="col-md-6">
-	  <?php echo '<form action="#" method="post" id="form_id">';
-	  ?>
 	  <div class="row">
 			<div class="col-md-12 embed-responsive embed-responsive-16by9">
 			<?php echo do_shortcode('[embedTwitch]'); ?>
@@ -257,25 +255,3 @@ $userdata = get_userdata( get_current_user_id() );
 	</div>
   </div>
 </div>
-
-<style>
-	/* CSS */	
-	.modal-body img {
-	overflow:hidden;
-	-webkit-border-radius:50px;
-	-moz-border-radius:50px;
-	border-radius:25px;
-	width:90px;
-	height:90px;
-	}
-
-	.modal-body a {
-		text-align: center;
-	}
-</style>
-
-<?php
-
-
-
-?>

@@ -86,13 +86,16 @@ function pgm_scripts() {
 	wp_enqueue_script( 'twitchSDK', 'https://ttv-api.s3.amazonaws.com/twitch.min.js', array('jquery2'), '', true);
 	
 	wp_enqueue_script( 'pgm-twitchdatas', '/wp-content/plugins/PGMTwitch/js/pgmdatas.js', array('jquery2', 'twitchSDK'), '', true);
+	wp_localize_script( 'pgm-twitchdatas' , 'PGM' , array('redirect' => home_url() . '/', 'key' =>  't6a5c7t3yr8usx1yh3kuse4w3uwlq5r'));
 	wp_enqueue_script( 'jeditable', get_template_directory_uri() . '/js/jquery.jeditable.min.js', array('jquery2'), '', true);
 	//if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		//wp_enqueue_script( 'comment-reply' );
 	//}
 
-	wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'jquery' ) );
-	wp_localize_script( 'my-ajax-request' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
+	if (is_page('dashboard')) {
+		wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'jquery' ) );
+		wp_localize_script( 'my-ajax-request' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
+	}
 
 	if (is_user_logged_in()) {
 		wp_enqueue_script( 'pgm-twitchapi', '/wp-content/plugins/PGMTwitch/js/pgmapi.js', array('jquery2', 'twitchSDK'), '', true);
@@ -429,7 +432,7 @@ add_filter('user_contactmethods','my_new_contactmethods',10,1);
 add_action( 'current_screen', 'redirect_non_authorized_user' );
 function redirect_non_authorized_user() {
 	// Si t'es pas admin, tu vires
-	if ( is_user_logged_in() && ! current_user_can( 'manage_options' ) ) {
+	if ( is_user_logged_in() && !is_admin() ) {
 		wp_redirect( home_url( '/dashboard/' ) );
 		exit();
 	}
