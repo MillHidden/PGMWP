@@ -67,32 +67,34 @@ add_filter( 'show_admin_bar' , 'my_function_admin_bar');
 	Enqueue scripts and styles
 -------------------------------------------------------------------------------*/
 
+$wp_roles = new WP_Roles();
+$wp_roles->remove_role("basic_contributor");
+
 function pgm_scripts() {
 
-	wp_enqueue_script( 'pgmjquery', 'https://code.jquery.com/jquery-1.12.4.min.js', array(), '1.12.4', true);
-	wp_enqueue_script( 'bootstrap-js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('pgmjquery'), '', true);
+	wp_enqueue_script( 'bootstrap-js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery'), '', false);
 	wp_enqueue_script('bootstrap-dropdown', 'http://twitter.github.com/bootstrap/1.4.0/bootstrap-dropdown.js',  array(), '1.4.0', true );
 	
 	wp_enqueue_script( 'pgm-scroll', get_template_directory_uri() . '/js/scroll.js', array(), '', true );
 	wp_enqueue_script( 'sticky', get_template_directory_uri() . '/js/sticky.js',  array(), '', true );
 
-	wp_enqueue_script( 'twitchSDK', 'https://ttv-api.s3.amazonaws.com/twitch.min.js', array('pgmjquery'), '', true);
-	wp_enqueue_script( 'pgm-twitchdatas', '/wp-content/plugins/PGMTwitch/js/pgmdatas.js', array('pgmjquery', 'twitchSDK'), '', true);
+	wp_enqueue_script( 'twitchSDK', 'https://ttv-api.s3.amazonaws.com/twitch.min.js', array('jquery'), '', false);
+	wp_enqueue_script( 'pgm-twitchdatas', '/wp-content/plugins/PGMTwitch/js/pgmdatas.js', array('jquery', 'twitchSDK'), '', false);
 	wp_localize_script( 'pgm-twitchdatas' , 'PGM' , array('redirect' => home_url() . '/', 'key' =>  't6a5c7t3yr8usx1yh3kuse4w3uwlq5r'));
 	
 	
 	if (is_page('dashboard')) {
 		wp_enqueue_script( 'jeditable', get_template_directory_uri() . '/js/jquery.jeditable.min.js',  array(), '1.0', true );	
-		wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'pgmjquery' ) );
+		wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'jquery' ), '', false );
 		wp_localize_script( 'my-ajax-request' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
 	}
 
 	if (is_home()) {
-		wp_enqueue_script( 'twitch-redirect', get_template_directory_uri() .'/js/twitchredirect.js', array( 'pgmjquery' ) );		
+		wp_enqueue_script( 'twitch-redirect', get_template_directory_uri() .'/js/twitchredirect.js', array( 'jquery' ), '', false );		
 	}
 
 	if (is_user_logged_in()) {
-		wp_enqueue_script( 'pgm-twitchapi', '/wp-content/plugins/PGMTwitch/js/pgmapi.js', array('pgmjquery', 'twitchSDK'), '', true);
+		wp_enqueue_script( 'pgm-twitchapi', '/wp-content/plugins/PGMTwitch/js/pgmapi.js', array('jquery', 'twitchSDK'), '', false);
 		wp_localize_script( 'pgm-twitchapi' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
 	}
 
