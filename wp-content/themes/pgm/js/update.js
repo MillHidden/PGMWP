@@ -1,6 +1,6 @@
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
-	jQuery.editable.addInputType('custom_input', {
+	$.editable.addInputType('custom_input', {
     	element : function(settings, original) {
             var input = $('<input size=20 class="input_inline"/>');
             if (settings.width  != 'none') { input.attr('width', settings.width);  }
@@ -13,7 +13,7 @@ jQuery(document).ready(function() {
         }
     });
 
-	jQuery('.editable').editable(MyAjax.ajaxurl, {
+	$('.editable').editable(MyAjax.ajaxurl, {
         indicator : 'Sauvegarde ...', // Texte qui sera affiché lors de la sauvegarde.
         tooltip   : 'Cliquer pour éditer', // Texte affiché dans l'info bulle lors du survole du texte.
 	    cancel    : 'Annuler', // Nom du bouton d'annulation.
@@ -40,7 +40,7 @@ jQuery(document).ready(function() {
 	});
 
 
-	jQuery('.edit_area').editable(MyAjax.ajaxurl, {
+	$('.edit_area').editable(MyAjax.ajaxurl, {
         indicator : 'Sauvegarde ...', // Texte qui sera affiché lors de la sauvegarde.
         tooltip   : 'Cliquer pour éditer', // Texte affiché dans l'info bulle lors du survole du texte.
 	    cancel    : 'Annuler', // Nom du bouton d'annulation.
@@ -73,4 +73,8 @@ jQuery(document).ready(function() {
         	action: "update",
         	},       
 	});
+
+    $('#useravatar img').click(function(){
+        
+    });
 });

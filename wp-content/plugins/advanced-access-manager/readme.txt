@@ -3,7 +3,7 @@ Contributors: vasyltech
 Tags: access, role, user, capability, page, post, permission, security
 Requires at least: 3.8
 Tested up to: 4.5.3
-Stable tag: 3.4.1
+Stable tag: 3.5
 
 One of the best tools in WordPress repository to manage access to your posts, 
 pages, categories and backend area for users, roles and visitors.
@@ -37,9 +37,7 @@ $user->getObject('post', 10)->has('frontend.read');
 
 //Example 2. Get Admin Menu object and check if user has access to Media menu.
 //If true then access denied to this menu
-$user->getObject('menu')->has('upload.php');
-
-//For more information feel free to contact us via email vasyl@vasyltech.com`
+$user->getObject('menu')->has('upload.php');`
 
 Check our [website page](http://vasyltech.com/advanced-access-manager) to find 
 out more about the Advanced Access Manager.
@@ -58,6 +56,18 @@ out more about the Advanced Access Manager.
 5. Posts & Pages access control form
 
 == Changelog ==
+
+= 3.5 =
+* Improved access control for Posts & Pages
+* Introduced Access Manager metabox to Post edit screen
+* Added Access action to list of Posts and Pages
+* Improved UI
+* Deprecated Skeleton extension in favor to upcoming totally new concept
+* Fixed bug with metaboxes initialization when backend filtering is OFF
+
+= 3.4.2 =
+* Fixed bug with post & pages access control
+* Added Extension version indicator
 
 = 3.4.1 =
 * Fixed bug with visitor access control

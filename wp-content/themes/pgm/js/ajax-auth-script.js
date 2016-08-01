@@ -1,18 +1,42 @@
 
-jQuery(document).ready(function ($) {
+$(document).ready(function ($) {
 
     // Display form from link inside a popup
-	$('#pop_login, #pop_signup').on('click', function (e) {
-        console.log("popup");
-        formToFadeOut = $('form#inscription');
-        formtoFadeIn = $('form#connexion');
-        if ($(this).attr('id') == 'pop_signup') {
-            formToFadeOut = $('form#connexion');
-            formtoFadeIn = $('form#inscription');
+	$('#pop_login, #pop_signup, #pop_lost').on('click', function (e) {
+        switch ($(this).attr('id')){
+            case 'pop_signup' :
+                formToFadeOut = new Array(
+                    $('form#connexion'),
+                    $('form#lostpassword')                    
+                );
+                formtoFadeIn = $('form#inscription');
+                break;
+            case 'pop_login' :
+                formToFadeOut = new Array(
+                    $('form#inscription'),
+                    $('form#lostpassword')
+                );
+                formtoFadeIn = $('form#connexion');
+                break;
+            case 'pop_lost' :
+                formToFadeOut = new Array(
+                    $('form#inscription'),
+                    $('form#connexion')
+                );
+                formtoFadeIn = $('form#lostpassword');
+                break;
+            default : 
+                formToFadeOut = new Array(
+                    $('form#inscription'),
+                    $('form#connexion'),
+                    $('form#lostpassword')
+                );
+                formtoFadeIn = "";
         }
-        formToFadeOut.fadeOut(500, function () {
-            formtoFadeIn.fadeIn();
-        })
+        for (var i = 0, len = formToFadeOut.length; i < len ; i++) {
+            formToFadeOut[i].fadeOut(500);
+        }
+        formtoFadeIn.fadeIn();       
 
         return false;
     });
@@ -20,7 +44,7 @@ jQuery(document).ready(function ($) {
 	// Close popup
     $(document).on('click', '.login_overlay, .close', function () {
 		console.log("popup");
-        $('form#connexion, form#inscription').fadeOut(500, function () {
+        $('form#connexion, form#inscription, form#lostpassword' ).fadeOut(500, function () {
             $('.login_overlay').remove();
         });
         return false;
@@ -37,7 +61,7 @@ jQuery(document).ready(function ($) {
     });
 
 	// Perform AJAX login/register on form submit
-	$('form#connexion, form#inscription').on('submit', function (e) {
+	$('form#connexion, form#inscription, form#lostpassword').on('submit', function (e) {
         
         if (!$(this).valid()){
             return false;
@@ -55,7 +79,12 @@ jQuery(document).ready(function ($) {
 			password = $('#signonpassword').val();
         	email = $('#email').val();
         	security = $('#signonsecurity').val();	
-		}  
+		} else if ($(this).attr('id') == 'lostpassword') {
+            action = 'ajaxlost';
+            username = $('#lostusername').val();
+            security = $('#lostpasswordsecurity').val();
+            password = '';
+        }
 		ctrl = $(this);
         $.ajax({
             type: 'POST',
@@ -70,7 +99,7 @@ jQuery(document).ready(function ($) {
             },
             success: function (data) {
 				$('p.status', ctrl).text(data.message);
-				if (data.loggedin == true) {
+                if (data.loggedin == true) {
                     document.location.href = ajax_auth_object.redirecturl;
                 }
             }

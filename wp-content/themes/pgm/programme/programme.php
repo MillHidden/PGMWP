@@ -1,21 +1,23 @@
 <?php
+require_once ('admin.php');
+include_once ('./admin-header.php');
+include(get_template_directory().'/programme/programme_class.php');
+$programme = new Programme('wp_programme');
+global $current_user;
+global $wpdb;
+get_currentuserinfo();
 
-    require_once ('admin.php');
-    include_once ('./admin-header.php');
-	include(get_template_directory().'/programme/programme_class.php');
-	$programme = new Programme('wp_cat_programme');
-	global $current_user;
-    get_currentuserinfo();
-
-    $year = date('Y');
-    $month = date('n');
-    $day = date('j');
-    $events = $programme->getEvents();
-    $dates = $programme->getAll($year);  
-    $streamer = $programme->getStreamer(); 
+$year = date('Y');
+$month = date('n');
+$day = date('j');
+$events = $programme->getEvents();
+$dates = $programme->getAll($year);  
+$streamer = $programme->getStreamer(); 
 ?>
+ <?php $wpdb->show_errors(); ?> 
 <script type="text/javascript">
 jQuery(function($){
+
 var month = <?php echo $month; ?>;
 var current = month;
 var current_jour_id = <?php echo date('j'); ?>;
@@ -34,11 +36,11 @@ $('.months a#linkMonth'+month2).addClass('active');
 current = month2;
 }
 return false; 
-}   			   
+}            
 );  
 
 $('div#add'+current_jour_id).toggleClass('daytitle').toggleClass('daytitle_add').show();
-$('table td').click(function(){	
+$('table td').click(function(){ 
 $('div#add'+current_jour_id).toggleClass('daytitle').toggleClass('daytitle_add');
 var id = $(this).attr('id');
 $('div#add'+id).toggleClass('daytitle').toggleClass('daytitle_add');
@@ -79,6 +81,24 @@ console.log(data);
 }
 }); 
 
+ $('#msg').hide();
+$('#addstreamer').editable({
+url: ajaxurl,
+title: 'Entrez les informations',
+placement: 'right',
+emptytext: 'nouvelle entrée',
+
+params: function(params) {
+params.action = 'add_streamer';
+return params;
+},
+success: function(data, response, newValue) {
+  console.log(data);
+  $('#msg').show();
+return {newValue: response.newValue};
+
+}          
+});
 
 var source =   [<?php $i = 0; $len = count($streamer); foreach ($streamer as $key => $value) {  ?>
     {'value': <?php echo $value->user_id; ?>, 'text': '<?php echo $value->user_login; ?>'} <?php if ($i == $len - 1) { echo ''; } else { echo ','; } ?>
@@ -101,20 +121,26 @@ console.log(data);
 
 
 
+
 });
+
+
 </script>
 <div class="wrap nosubsub">
     <h2>Page des programmes <?php echo $year; ?></h2>
 </div>
 <hr>
+<div id="msg" class="alert alert-success">
+  <strong>Success !</strong> Programme bien ajouté au planning.
+</div>
        <?php
        // $id+1 = ID du mois 
        // $m = MOIS en lettre
        ?>
             <div class="months">
                    <?php
-			       // On récupere l'array mois ($programme->months) qui correspond au jour donc l'id de l'array (+1 jour)
-			       ?>
+             // On récupere l'array mois ($programme->months) qui correspond au jour donc l'id de l'array (+1 jour)
+             ?>
                     <?php foreach ($programme->months as $id=>$m): ?>
                          <div style="font-size: 24px;margin-left:3.5%;float:left"><a href="#" id="linkMonth<?php echo $id+1; ?>"><?php echo utf8_encode(utf8_decode($m)); ?></a></div>
                     <?php endforeach; ?>
@@ -126,8 +152,8 @@ console.log(data);
             $dates = current($dates); 
             ?>
             <?php 
-			// On veut le numéro du mois et on l'affiche id = month echo $m;
-            foreach ($dates as $m=>$days): ?>
+      // On veut le numéro du mois et on l'affiche id = month echo $m;
+           foreach ($dates as $m=>$days):  ?> 
 
                <div class="month relative" id="month<?php echo $m; ?>">
                <table>
@@ -147,7 +173,7 @@ console.log(data);
                            <?php 
                            //w = jour du mois 
                            if($d == 1 && $w != 1): 
-                           	?>
+                            ?>
                                 <td colspan="<?php echo $w-1; ?>" class="padding"></td>
                            <?php endif; ?>
                            <td<?php 
@@ -165,39 +191,41 @@ console.log(data);
                                    <?php  if(isset($events[$time])):   foreach($events[$time] as  $id => $resultats): ?>
                                     <div class="clear"></div>
                                    <div class="tab-content">
-                  										<div id="program">
-                  											<hr>
-                  											<div class="col-md-10 col-md-offset-1">
-                  												<ul class="event-list">
-                  													<li>
-                  														<div class="prog-bloc-time">
+                                      <div id="program">
+                                        <hr>
+                                        <div class="col-md-10 col-md-offset-1">
+                                          <ul class="event-list">
+                                            <li>
+                                              <div class="prog-bloc-time">
                                                 <a href="#" class="test" data-pk = "<?php echo $resultats->id; ?>" data-name="<?php echo $resultats->start_end; ?>"><?php echo $resultats->start_end; ?></a>
-                  														</div>
-                  														<span>
-                  															<img src="<?php echo get_bloginfo('template_directory');?>/images/blocs/timeline/streamer-round.png" style="float: left;margin-left: 5%;" alt="">
-                  														</span>
-                  														<div class="info">
-                  															<h2 class="title">
+                                              </div>
+                                              <span>
+                                                <img src="<?php echo get_bloginfo('template_directory');?>/images/blocs/timeline/streamer-round.png" style="float: left;margin-left: 5%;" alt="">
+                                              </span>
+                                              <div class="info">
+                                                <h2 class="title">
                                                    <a href="#" id="streamer" data-pk="<?php echo $resultats->id; ?>" data-type="select"><?php echo $resultats->user_login; ?></a>
                                                 </h2>
                                                 <p class="desc">
                                                 <a href="#" class="test2" data-pk = "<?php echo $resultats->id; ?>" data-name="<?php echo $resultats->description; ?>"><?php echo $resultats->description; ?></a>
-                  																
-                  															</p>
-                  															<p class="profil-programme"><a class="btn btn-sample btn-border" href="login.html"><span class="glyphicon glyphicon-user"></span> Profil de <?php echo $resultats->user_login; ?></a>
-                  															</p>
-                  														</div>
-                  													</li>
-                  												</ul>
-                  											</div>
-                  										</div>
-                  									</div>	
+                                                  
+                                                </p>
+                                                <p class="profil-programme"><a class="btn btn-sample btn-border" href="login.html"><span class="glyphicon glyphicon-user"></span> Profil de <?php echo $resultats->user_login; ?></a>
+                                                </p>
+                                              </div>
+                                            </li>
+                                          </ul>
+                                        </div>
+                                      </div>
+                                    </div>  
                                     <?php $nombre++; endforeach; endif;  ?>
-                               </div>	
-                               <?php if($nombre != 0): ?> 
-                               <span class="events"><?php echo $nombre; ?></span>	
-                                <?php endif; ?>		     
-						              </td>
+                               </div> 
+                               <ul class="events">
+                                <?php  if(isset($events[$time])):   foreach($events[$time] as  $id => $resultats): ?>
+                                        <li></li>
+                                   <?php endforeach; endif;  ?>
+                               </ul>
+                          </td>
                            <?php if($w == 7): ?>
                             </tr><tr>
                            <?php endif; ?>
@@ -205,6 +233,7 @@ console.log(data);
                        <?php if($end != 7): ?>
                             <td colspan="<?php echo 7-$end; ?>" class="padding"></td>
                        <?php endif; ?>
+
                        </tr>
                    </tbody>
                </table>
@@ -214,9 +243,14 @@ console.log(data);
         <div class="clear"></div>
         </br>
         </br>
-      	<hr>
-      	<h4>Ajouter un programme au planning</h4>
-      
+        <div class="wrap nosubsub">
+    <h2>Gestion des programmes</h2>
+</div>
+        <hr>
 
-<?php
-include('./admin-footer.php');
+
+<div id="test">
+Ajouter un programme : <a href="#" id="addstreamer" data-type="addstreamer" data-pk="1"></a>
+
+
+</div>

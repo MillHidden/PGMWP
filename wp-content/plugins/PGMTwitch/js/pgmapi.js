@@ -3,7 +3,7 @@
 	var timecookie = 15;  // durée de vie du cookie en jours	
 	var username;
 	var accesstoken;
-
+	
 	$.post(
 		MyAjax.ajaxurl, {
 			'action'		: 'getinfo',
@@ -18,7 +18,8 @@
 
 		/* initialisation api twitch */	
 		Twitch.init({
-			clientId: PGM.key,			
+			clientId: PGM.key,
+			redirect_uri: PGM.redirect											
 		}, 
 		function(error, status){
 			if (error){
@@ -26,8 +27,9 @@
 			}else {
 				$('#login').click(function(){
 					Twitch.login({
-						scope: ['user_read', 'user_follows_edit']					
-					});
+						scope: ['user_read', 'user_follows_edit'],
+						popup: true					
+					});									
 				});
 
 				$('#logout').click(function(){
@@ -38,8 +40,8 @@
 				});					
 				
 				if ((accesstoken == null) || (accesstoken == "")) {
-					if (status.authenticated){
-						Twitch.api({method: 'user'}, function(error, user) {						
+					if (status.authenticated){						
+						Twitch.api({method: 'user'}, function(error, user) {					
 							username = user.display_name;
 							getFollow(username, channelname);						
 							$('#follow').show();

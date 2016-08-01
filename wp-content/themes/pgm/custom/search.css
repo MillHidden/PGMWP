@@ -1,0 +1,24 @@
+h2 {
+	color:#23282D;
+	font-size:1.5em;
+	margin:0;
+}
+
+h2 span {
+	color:#83679E;
+}
+
+article {
+		margin:2% 0 0 0;
+}
+
+header h2 {	
+	text-decoration: none;
+	font-size:1em;
+	margin:0 0 1% 0;
+}
+
+.search_entry img {
+    float: left;
+    margin-right: 2%;
+}

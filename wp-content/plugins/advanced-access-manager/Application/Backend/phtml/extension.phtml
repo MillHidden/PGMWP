@@ -35,7 +35,7 @@
                             <?php foreach ($this->getProductList('commercial') as $product) { ?>
                                 <tr>
                                     <td>
-                                        <span class='aam-setting-title'><?php echo $product['title'], ' - ' . ($product['cost'] . ' <small>' . $product['currency'] . '</small>'); ?></span>
+                                        <span class='aam-setting-title'><?php echo $product['title'], (!empty($product['version']) ? ' <small class="text-muted">v' . $product['version'] . '</small>' : ''), ' - ' . ($product['cost'] . ' <small>' . $product['currency'] . '</small>'); ?></span>
                                         <p class="aam-extension-description">
                                             <?php echo $product['description']; ?>
                                         </p>
@@ -60,7 +60,7 @@
                             <?php foreach ($this->getProductList('GNU') as $product) { ?>
                                 <tr>
                                     <td>
-                                        <span class='aam-setting-title'><?php echo $product['title'], ' - ' . ('<span class="text-success">' . __('Free', AAM_KEY) . '</span>'); ?></span>
+                                        <span class='aam-setting-title'><?php echo $product['title'], (!empty($product['version']) ? ' <small class="text-muted">v' . $product['version'] . '</small>' : ''), ' - ' . ('<span class="text-success">' . __('Free', AAM_KEY) . '</span>'); ?></span>
                                         <p class="aam-extension-description">
                                             <?php echo $product['description']; ?>
                                         </p>
@@ -154,5 +154,4 @@
             </div>
         </div>
     </div>
-    <?php
-}
+<?php }

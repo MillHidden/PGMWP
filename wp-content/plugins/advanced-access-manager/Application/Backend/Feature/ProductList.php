@@ -9,14 +9,15 @@
 
 return array(
     array(
-        'title' => 'AAM Plus Package',
+        'title' => '<span class="aam-highlight">AAM Plus Package</span>',
         'id' => 'AAM Plus Package',
         'type' => 'commercial',
         'cost'  => '$30',
         'currency' => 'USD',
-        'description' => __('Setup access to unlimited number of posts, pages or custom post types as well as define default access to ALL posts, pages, custom post types, categories or custom taxonomies.', AAM_KEY),
+        'description' => __('Out best selling extension that allows you to setup access to unlimited number of posts, pages or custom post types as well as define default access to ALL posts, pages, custom post types, categories or custom taxonomies.', AAM_KEY),
         'storeURL' => 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FGAHULDEFZV4U',
-        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Plus Package')
+        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Plus Package'),
+        'version' => AAM_Core_Repository::getInstance()->getExtensionVersion('AAM Plus Package')
     ),
     array(
         'title' => 'AAM Role Filter',
@@ -26,7 +27,8 @@ return array(
         'currency' => 'USD',
         'description' => __('More advanced user and role administration. Based on user capabilities level, filter list of roles that user can manage. Also prevent from editing, promoting or deleting higher level users.', AAM_KEY),
         'storeURL' => 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G9V4BT3T8WJSN',
-        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Role Filter')
+        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Role Filter'),
+        'version' => AAM_Core_Repository::getInstance()->getExtensionVersion('AAM Role Filter')
     ),
     array(
         'title' => 'AAM Support',
@@ -46,7 +48,8 @@ return array(
         'currency' => 'USD',
         'description' => __('Development license gives you an ability to download all the available extensions and use them up to 5 life domains.', AAM_KEY),
         'storeURL' => 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZX9RCWU6BTE52',
-        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Development License')
+        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Development License'),
+        'version' => AAM_Core_Repository::getInstance()->getExtensionVersion('AAM Development License')
     ),
     array(
         'title' => 'AAM Multisite',
@@ -54,7 +57,8 @@ return array(
         'type' => 'GNU',
         'license' => 'AAMMULTISITE',
         'description' => __('Convenient way to navigate between different sites in the Network Admin Panel. This extension adds additional widget to the AAM page that allows to switch between different sites.', AAM_KEY),
-        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Multisite')
+        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Multisite'),
+        'version' => AAM_Core_Repository::getInstance()->getExtensionVersion('AAM Multisite')
     ),
     array(
         'title' => 'AAM Post Filter',
@@ -62,21 +66,14 @@ return array(
         'type' => 'GNU',
         'license'  => 'AAMPOSTFILTER',
         'description' => AAM_Backend_View_Helper::preparePhrase('[WARNING!] Please use with caution. This is a supportive exension for the post access option [List]. It adds additional post filtering to fix the issue with large amount of post. [Turned on caching] is strongly recommended.', 'strong', 'strong', 'strong'),
-        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Post Filter')
-    ),
-    array(
-        'title' => 'AAM Skeleton Extension',
-        'id' => 'AAM Skeleton Extension',
-        'type' => 'GNU',
-        'license' => 'SKELETONEXT',
-        'description' => __('Skeleton for custom AAM extension. Please find all necessary documentation inside the source code.', AAM_KEY),
-        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Skeleton Extension')
+        'status' => AAM_Core_Repository::getInstance()->extensionStatus('AAM Post Filter'),
+        'version' => AAM_Core_Repository::getInstance()->getExtensionVersion('AAM Post Filter')
     ),
     array(
         'title' => 'CodePinch',
         'id' => 'WP Error Fix',
         'type' => 'plugin',
-        'description' => __('Our patent-pending technology provides solutions to PHP errors within hours, preventing costly maintenance time and keeping your WordPress site error.', AAM_KEY),
+        'description' => '<span class="aam-highlight">Highly recommended!</span> ' .  __('Patent-pending technology that provides solutions to PHP errors within hours, preventing costly maintenance time and keeping your WordPress site error.', AAM_KEY) . ' <a href="http://codepinch.io" target="_blank">Read more.</a>',
         'status' => AAM_Core_Repository::getInstance()->pluginStatus('WP Error Fix')
     ),
     array(

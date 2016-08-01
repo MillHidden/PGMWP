@@ -2,25 +2,17 @@
 /**
  * ** PAGE PRINCIPAL **
  *
- * @link https://codex.wordpress.org/Template_Hierarchy
- *
- * @package pgm
+ * @link http://www.puregamemedia.fr/
+ * @title pgm
  */
-
- 
-/** PAGE PRINCIPAL **/
-
-function load_css() {
-	wp_enqueue_style( 'actualites', get_template_directory_uri() . '/custom/actualites.css' );
-}
-add_action('wp_enqueue_scripts', 'load_css');
-
 
 get_template_part( 'template-parts/content', 'header' );
 
+	get_template_part( 'template-parts/content', 'left' );
+	 
+  	 get_template_part( 'template-parts/content', 'defaut' );
 
-
-   get_template_part( 'template-parts/content', 'defaut' );
+   	get_template_part( 'template-parts/content', 'right' );
 
 get_template_part( 'template-parts/content', 'footer' );
 

@@ -28,9 +28,21 @@
     <input id="username" type="text" class="required" name="username">
     <label for="password">Mot de passe</label>
     <input id="password" type="password" class="required" name="password">
-    <a class="text-link" href="<?php
-        echo wp_lostpassword_url(); ?>">Mot de passe perdu?</a>
+    <a class="text-link" id="pop_lost" href="">Mot de passe perdu?</a>
     <input class="submit_button" type="submit" value="Se connecter">
 	<a class="close" href="">(fermer)</a>    
 </form>
- 
+
+<form id="lostpassword" class="ajax-auth" action="lostpassword" method="post">
+    <h3>Nouveau? <a id="pop_signup" href="">Inscription</a></h3>
+    <hr />
+    <h1>Retrouver son mot de passe</h1>
+    <p class="status"></p>  
+    <?php wp_nonce_field( 'ajax-lost-password-nonce', 'lostpasswordsecurity' ); ?>
+    <label for="lostusername">Username</label>
+    <input id="lostusername" type="text" class="required" name="lostusername">    
+    <a class="text-link" id="pop_login"  id href="">Connexion</a>
+    <input class="submit_button" type="submit" value="envoyer un lien de réinitialisation">
+    <a class="close" href="">(fermer)</a>    
+</form>
+

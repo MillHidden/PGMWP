@@ -1,5 +1,5 @@
 <?php
-require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
+require_once( $_SERVER['DOCUMENT_ROOT'] . '/PGMWP/wp-load.php' );
 
 
 class Programme
@@ -10,8 +10,8 @@ class Programme
      * @var boolean
      */
     private $tableName = false;
-	
-		
+    
+        
     /**
      * Constructor for the database class to inject the table name
      *
@@ -28,7 +28,7 @@ class Programme
 
     function getEvents(){
         global $wpdb;
-        $req = $wpdb->get_results("SELECT events.id, events.description, events.date, events.start_end, wp_users.user_login FROM events INNER JOIN  wp_users ON  wp_users.ID = events.id_streamer  ORDER BY events.id DESC");
+        $req = $wpdb->get_results("SELECT $this->tableName.id, $this->tableName.description, $this->tableName.date, $this->tableName.start_end, wp_users.user_login FROM $this->tableName INNER JOIN  wp_users ON  wp_users.ID = $this->tableName.id_streamer  ORDER BY $this->tableName.id DESC");
 
        
         foreach ( $req as $datas ) 
@@ -64,7 +64,7 @@ class Programme
      }
 
 
-	
+    
     /**
      * Insert data into the current data
      */
@@ -73,11 +73,11 @@ class Programme
         global $wpdb;
 
         $wpdb->insert($this->tableName, array(
-					'id_planning' => $id_planning,
-					'auteur' => $auteur,
-					'start_date' => $start_date,
+                    'id_planning' => $id_planning,
+                    'auteur' => $auteur,
+                    'start_date' => $start_date,
                     'start_end' => $start_end)
-			);
+            );
 
     }
 
@@ -87,32 +87,28 @@ class Programme
     public function get_planning($resultats)
     {
         global $wpdb;
-		return $wpdb->get_var($wpdb->prepare('SELECT COUNT(id_planning) FROM '.$this->tableName.' WHERE id_planning = %d', $resultats));		
+        return $wpdb->get_var($wpdb->prepare('SELECT COUNT(id_planning) FROM '.$this->tableName.' WHERE id_planning = %d', $resultats));        
     }    
 
-    public function update($resultats)
-    {
+    function getPlanning($date_du_jour){
         global $wpdb;
-    $wpdb->update( 
-        'table', 
-        array( 
-            'column1' => 'value1',  // string
-            'column2' => 'value2'   // integer (number) 
-        ), 
-        array( 'ID' => 1 ), 
-        array( 
-            '%s',   // value1
-            '%d'    // value2
-        ), 
-        array( '%d' ) 
-    );      
-    }  
+        $lundi = date('Y-m-d', strtotime('last monday', strtotime($date_du_jour)));
+        $dimanche = date('Y-m-d', strtotime('next sunday', strtotime($date_du_jour)));
 
-    
-		
+        $req = $wpdb->get_results("SELECT *, WEEKDAY(date) as dayofweek FROM ".$this->tableName." INNER JOIN wp_users ON wp_users.ID = $this->tableName.id_streamer WHERE $this->tableName.date BETWEEN '".$lundi."' AND '".$dimanche."' ORDER BY $this->tableName.date ASC");
 
-		
-}		
-			
+        $r = array();
+        foreach ( $req as $datas )
+        {
+           $r[$datas->dayofweek][] = $datas;
+        }
+        return $r;
+
+    } 
+        
+
+        
+}       
+            
  
  ?>

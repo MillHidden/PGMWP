@@ -7,181 +7,180 @@
  * @package pgm
  */
 
-if ( ! function_exists( 'pgm_setup' ) ) :
+if ( ! function_exists( 'pgm_setup' ) ) {
 
-/**
- * Ajout d'une taille personnaliser pour le bloc "Image à la une"
- */
- 
-add_theme_support('post-thumbnails');
-if (function_exists('add_image_size')) {
-     add_image_size('article_entete', 370, 140, true);
+	/**
+	 * Ajout d'une taille personnalisée pour le bloc "Image à la une"
+	 */
+	 
+	add_theme_support('post-thumbnails');
+	if (function_exists('add_image_size')) {
+	     add_image_size('article_entete', 370, 140, true);
+	}
+
+	add_theme_support('post-thumbnails');
+	if (function_exists('add_image_size')) {
+	     add_image_size('article_related', 165, 94.78, true);
+	}
+
+	function pgm_setup() {
+
+		require_once( get_template_directory() . '/libs/custom-ajax-auth.php' );
+
+		load_theme_textdomain( 'pgm', get_template_directory() . '/languages' );
+
+		add_theme_support( 'automatic-feed-links' );
+		add_theme_support( 'title-tag' );
+		add_theme_support( 'post-thumbnails' );
+		add_theme_support( 'html5', array(
+			'search-form',
+			'comment-form',
+			'comment-list',
+			'gallery',
+			'caption',
+		) );
+	}
 }
-
-function pgm_setup() {
-
-	require_once( get_template_directory() . '/libs/custom-ajax-auth.php' );
-
-	/*
-	 * Make theme available for translation.
-	 * Translations can be filed in the /languages/ directory.
-	 * If you're building a theme based on pgm, use a find and replace
-	 * to change 'pgm' to the name of your theme in all the template files.
-	 */
-	load_theme_textdomain( 'pgm', get_template_directory() . '/languages' );
-
-	// Add default posts and comments RSS feed links to head.
-	add_theme_support( 'automatic-feed-links' );
-
-	/*
-	 * Let WordPress manage the document title.
-	 * By adding theme support, we declare that this theme does not use a
-	 * hard-coded <title> tag in the document head, and expect WordPress to
-	 * provide it for us.
-	 */
-	add_theme_support( 'title-tag' );
-
-	/*
-	 * Enable support for Post Thumbnails on posts and pages.
-	 *
-	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-	 */
-	add_theme_support( 'post-thumbnails' );
-
-	// This theme uses wp_nav_menu() in one location.
-	register_nav_menus( array(
-		'primary' => esc_html__( 'Primary', 'pgm' ),
-	) );
-
-	/*
-	 * Switch default core markup for search form, comment form, and comments
-	 * to output valid HTML5.
-	 */
-	add_theme_support( 'html5', array(
-		'search-form',
-		'comment-form',
-		'comment-list',
-		'gallery',
-		'caption',
-	) );
-
-}
-endif;
 add_action( 'after_setup_theme', 'pgm_setup' );
 
-/**
- * Enqueue scripts and styles.
- */
+/*-------------------------------------------------------------------------------
+	Enlever la barre de connexion wordpress
+-------------------------------------------------------------------------------*/
+
+function my_function_admin_bar(){
+    return false;
+}
+add_filter( 'show_admin_bar' , 'my_function_admin_bar');
+
+/*-------------------------------------------------------------------------------
+	Ajout script google api
+-------------------------------------------------------------------------------*/
+
+//function modify_jquery() {
+//		wp_deregister_script('jquery');
+//		wp_register_script('jquery', 'https://code.jquery.com/jquery-1.12.4.min.js', false, '1.12.4');
+//		wp_enqueue_script('jquery');
+//}
+//add_action('init', 'modify_jquery');
+
+/*-------------------------------------------------------------------------------
+	Enqueue scripts and styles
+-------------------------------------------------------------------------------*/
 
 function pgm_scripts() {
-	wp_enqueue_script( 'jquery2', 'https://code.jquery.com/jquery-1.12.4.min.js');
-	wp_enqueue_script( 'bootstrap-js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('jquery2'), '1.0', true);
-	wp_enqueue_script( 'pgm-navigation', get_template_directory_uri() . '/js/navigation.js', array('jquery2'), '20151215', true );
-	wp_enqueue_script( 'pgm-scroll', get_template_directory_uri() . '/js/scroll.js', array('jquery2'), '20151215', true );
-	wp_enqueue_script( 'pgm-form', get_template_directory_uri() . '/js/form.js', array('jquery2'), '20151215', true );
-	wp_enqueue_script( 'pgm-slider', get_template_directory_uri() . '/js/slider.js', array('jquery2'), '20151215', true );
-	wp_enqueue_script( 'pgm-validator', get_template_directory_uri() . '/js/validator.js', array('jquery2'), '20151215', true );
-	wp_enqueue_script( 'pgm-carousel', get_template_directory_uri() . '/js/carousel.js', array('jquery2'), '20151215', true );
-	wp_enqueue_script( 'pgm-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array('jquery2'), '20151215', true );
-	wp_enqueue_script( 'twitchSDK', 'https://ttv-api.s3.amazonaws.com/twitch.min.js', array('jquery2'), '', true);
-	
-	wp_enqueue_script( 'pgm-twitchdatas', '/wp-content/plugins/PGMTwitch/js/pgmdatas.js', array('jquery2', 'twitchSDK'), '', true);
-	wp_localize_script( 'pgm-twitchdatas' , 'PGM' , array('redirect' => home_url() . '/', 'key' =>  't6a5c7t3yr8usx1yh3kuse4w3uwlq5r'));
-	wp_enqueue_script( 'jeditable', get_template_directory_uri() . '/js/jquery.jeditable.min.js', array('jquery2'), '', true);
-	//if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		//wp_enqueue_script( 'comment-reply' );
-	//}
 
+	wp_enqueue_script( 'pgmjquery', 'https://code.jquery.com/jquery-1.12.4.min.js', array(), '1.12.4', true);
+	wp_enqueue_script( 'bootstrap-js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', array('pgmjquery'), '', true);
+	wp_enqueue_script('bootstrap-dropdown', 'http://twitter.github.com/bootstrap/1.4.0/bootstrap-dropdown.js',  array(), '1.4.0', true );
+	
+	wp_enqueue_script( 'pgm-scroll', get_template_directory_uri() . '/js/scroll.js', array(), '', true );
+	wp_enqueue_script( 'sticky', get_template_directory_uri() . '/js/sticky.js',  array(), '', true );
+
+	wp_enqueue_script( 'twitchSDK', 'https://ttv-api.s3.amazonaws.com/twitch.min.js', array('pgmjquery'), '', true);
+	wp_enqueue_script( 'pgm-twitchdatas', '/wp-content/plugins/PGMTwitch/js/pgmdatas.js', array('pgmjquery', 'twitchSDK'), '', true);
+	wp_localize_script( 'pgm-twitchdatas' , 'PGM' , array('redirect' => home_url() . '/', 'key' =>  't6a5c7t3yr8usx1yh3kuse4w3uwlq5r'));
+	
+	
 	if (is_page('dashboard')) {
-		wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'jquery' ) );
+		wp_enqueue_script( 'jeditable', get_template_directory_uri() . '/js/jquery.jeditable.min.js',  array(), '1.0', true );	
+		wp_enqueue_script( 'my-ajax-request', get_template_directory_uri() .'/js/update.js', array( 'pgmjquery' ) );
 		wp_localize_script( 'my-ajax-request' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
 	}
 
+	if (is_home()) {
+		wp_enqueue_script( 'twitch-redirect', get_template_directory_uri() .'/js/twitchredirect.js', array( 'pgmjquery' ) );		
+	}
+
 	if (is_user_logged_in()) {
-		wp_enqueue_script( 'pgm-twitchapi', '/wp-content/plugins/PGMTwitch/js/pgmapi.js', array('jquery2', 'twitchSDK'), '', true);
+		wp_enqueue_script( 'pgm-twitchapi', '/wp-content/plugins/PGMTwitch/js/pgmapi.js', array('pgmjquery', 'twitchSDK'), '', true);
 		wp_localize_script( 'pgm-twitchapi' , 'MyAjax' , array('ajaxurl' => admin_url ( 'admin-ajax.php' ))  );
+	}
+
+	if ( is_archive() ) {
+		wp_enqueue_script( 'pgm-archives', get_template_directory_uri() . '/js/archives.js',  array(), '1.0', true );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'pgm_scripts' );
 
 
-function additional_custom_styles() {
+function pgm_styles() {
 	
-	wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/bootstrap/bootstrap.css');    
-    wp_enqueue_style( 'font-awesome.min', get_template_directory_uri() . '/bootstrap/font-awesome.min.css' );
-	wp_enqueue_style( 'circle', get_template_directory_uri() . '/custom/circle.css' );
+	wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/bootstrap/bootstrap.css', 'all');    
+    wp_enqueue_style( 'font-awesome.min', get_template_directory_uri() . '/bootstrap/font-awesome.min.css', 'all' );
+    wp_enqueue_style( 'theme', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css', 'all');	
 
-	if ( is_page( 'streamers' ) ) {
-    /*Enqueue The Styles*/    
-    wp_enqueue_style( 'streamers', get_template_directory_uri() . '/custom/streamers.css' );
+    // Page home + actualités + article simple
+    if ( is_home() || is_front_page() || is_single()) {
+    	wp_enqueue_style( 'pgm-actualites', get_template_directory_uri() . '/custom/actualites.css', 'all' );
+    	wp_enqueue_style( 'circle', get_template_directory_uri() . '/custom/circle.css', 'all' );
+	}
+	
+
+	// Page des commentaires : article simple
+	if (is_single()) {
+		wp_enqueue_style( 'pgm-commentaire', get_template_directory_uri() . '/custom/commentaire.css', 'all');
 	}
 
-	if ( is_page( 'register' ) ) {
-    /*Enqueue The Styles*/    
-    wp_enqueue_style( 'custom register', get_template_directory_uri() . '/custom/register.css' );
+	// Page des archives
+	if ( is_archive() ) {
+		wp_enqueue_style( 'pgm-archives', get_template_directory_uri() . '/custom/archives.css', 'all');
+	}
+
+	// Page ou se trouve la recherche	
+	if ( is_search() ) {   
+    	wp_enqueue_style( 'pgm-search', get_template_directory_uri() . '/custom/search.css', 'all');
 	}	
 	
 	if ( is_page( 'vod' ) ) {
     /*Enqueue The Styles*/    
-    wp_enqueue_style( 'vod', get_template_directory_uri() . '/custom/vod.css' );
-	}	
+    	wp_enqueue_style( 'vod', get_template_directory_uri() . '/custom/vod.css' );
+	}
 
-	if ( is_page( 'programme' ) ) {
-    /*Enqueue The Styles*/    
-    wp_enqueue_style( 'programme', get_template_directory_uri() . '/custom/programme.css' );
-	}	
+	// Page ou se trouve le planning	
+	if ( is_page( 'planning' ) ) {
+    	wp_enqueue_style( 'pgm-planning', get_template_directory_uri() . '/custom/planning.css', 'all');
+	}
 
-	if ( is_page( 'ticket' ) ) {
-    /*Enqueue The Styles*/    
-    wp_enqueue_style( 'ticket', get_template_directory_uri() . '/custom/ticket.css' );
-	}		
+	// Page ou se trouve les tickets
+	if ( is_page( 'ticket' ) ) {  
+    	wp_enqueue_style( 'pgm-ticket', get_template_directory_uri() . '/custom/ticket.css', 'all');
+	}			
 	
 	wp_enqueue_style( 'style', get_template_directory_uri() . '/style.css' );		
 }
-add_action( 'wp_enqueue_scripts', 'additional_custom_styles' );
+add_action( 'wp_enqueue_scripts', 'pgm_styles' );
 
 /*-------------------------------------------------------------------------------
 	Ajout css/script panel admin 
 -------------------------------------------------------------------------------*/
 
 function pgm_scripts_admin() {
-		wp_enqueue_script('bootstrap-min', get_stylesheet_directory_uri().'/js/bootstrap-min.js', array('jquery'), '', true);
-        wp_enqueue_style( 'custom_wp_admin_css', get_template_directory_uri() . '/custom/programme-admin.css', array('jquery'), '20151215', true );
-        wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/bootstrap/bootstrap.css', array('jquery'), '20151215', true );
-		wp_enqueue_style( 'circle', get_template_directory_uri() . '/custom/circle.css', array('jquery'), '20151215', true );
-		wp_enqueue_style( 'bootstrap-editable_css', get_template_directory_uri() . '/custom/bootstrap-editable.css', array('jquery'), '20151215', true );
-		wp_enqueue_script('bootstrap-editable', get_stylesheet_directory_uri().'/js/bootstrap-editable.min.js', array('jquery'), "", true);	
+
+	if($_GET['page'] == 'programme'):
+		wp_enqueue_script('bootstrap-min', get_stylesheet_directory_uri().'/js/bootstrap-min.js', "", true);
+        wp_enqueue_style( 'custom_wp_admin_css', get_template_directory_uri() . '/custom/programme-admin.css', '20151215', true );
+        wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/bootstrap/bootstrap.css', '20151215', true );
+		wp_enqueue_style( 'circle', get_template_directory_uri() . '/custom/circle.css', '20151215', true );
+		wp_enqueue_style( 'bootstrap-editable_css', get_template_directory_uri() . '/custom/bootstrap-editable.css', '20151215', true );
+		wp_enqueue_script('bootstrap-editable', get_stylesheet_directory_uri().'/js/bootstrap-editable.min.js', "", true);
+		wp_enqueue_script('inputAjax', get_stylesheet_directory_uri().'/js/inputAjax.js', "", true);
+		endif;
 		
 }
 add_action( 'admin_enqueue_scripts', 'pgm_scripts_admin' );
-
-
 
 /*-------------------------------------------------------------------------------
 	Lire la suite d'un article
 -------------------------------------------------------------------------------*/
 
 function get_excerpt($count){
-  $permalink = get_permalink($post->ID);
-  $excerpt = get_the_content();
-  $excerpt = strip_tags($excerpt);
-  $excerpt = substr($excerpt, 0, $count);
-  $excerpt = substr($excerpt, 0, strripos($excerpt, " "));
-  $excerpt = $excerpt.'...';
-  return $excerpt;
-}
-
-/*-------------------------------------------------------------------------------
-	Ajout du programme dans l'administration
--------------------------------------------------------------------------------*/
-
-function add_links_menu() {
-   add_menu_page('Programme', 'Programme', 'programme', 'programme', 'page_gen', 'images/marker.png', 50);		
-}
-add_action( 'admin_menu', 'add_links_menu' );
-
-function page_gen() {
-	include(get_template_directory().'/programme/programme.php');
+	$permalink = get_permalink($post->ID);
+	$excerpt = get_the_content();
+	$excerpt = strip_tags($excerpt);
+	$excerpt = substr($excerpt, 0, $count);
+	$excerpt = substr($excerpt, 0, strripos($excerpt, " "));
+	$excerpt = $excerpt.'...';
+	return $excerpt;
 }
 
 
@@ -195,19 +194,74 @@ add_action('init', 'myStartSession', 1);
 add_action('wp_logout', 'myEndSession'); 
 add_action('wp_login', 'myEndSession');
 
+/*-------------------------------------------------------------------------------
+	Ajout du programme dans l'administration
+-------------------------------------------------------------------------------*/
+
+function add_links_menu() {
+	add_menu_page('Programme', 'Programme', 'administrator', 'programme', 'page_gen', 'images/marker.png', 50);	
+}
+add_action( 'admin_menu', 'add_links_menu' );
+
+function page_gen() {
+	include(get_template_directory().'/programme/programme.php');
+}
+
+
+
 
 /*-------------------------------------------------------------------------------
-	JS programme / ajax
+	AJAX programme
 -------------------------------------------------------------------------------*/
 
 require_once( $_SERVER['DOCUMENT_ROOT'] . '/PGMWP/wp-load.php' );
 
+add_action( 'wp_ajax_my_action', 'my_action' );
+add_action( 'wp_ajax_nopriv_my_action', 'my_action' ); 
+
+wp_localize_script (  'my_action' ,  'ajaxurl' , array (  'ajaxurl'  => admin_url (   'admin-ajax.php'  )  )  );
+
+function my_action(){
+
+$id = $_POST['pk'];
+$data_edited = $_POST['value'];
+$sql = $_POST['sql'];
+
+   if(!is_null($id))
+    {
+    	global $wpdb;
+		$wpdb->update('wp_programme', array($sql => $data_edited), array("id" => $id));
+	}
+
+	wp_die();
+} 
+
+add_action( 'wp_ajax_add_streamer', 'add_streamer' );
+add_action( 'wp_ajax_nopriv_add_streamer', 'add_streamer' ); 
+
+wp_localize_script (  'add_streamer' ,  'ajaxurl' , array (  'ajaxurl'  => admin_url (   'admin-ajax.php'  )  )  );
+
+function add_streamer(){
+
+	$start_end = $_POST['value']['start_end'];
+	$streamer = $_POST['value']['streamer'];
+	$description = $_POST['value']['description'];
+	$date = $_POST['value']['date'];
+    
+    global $wpdb;
+    $req = $wpdb->get_var("SELECT wp_usermeta.user_id,  wp_users.user_login, wp_users.ID FROM wp_usermeta INNER JOIN  wp_users ON  wp_users.ID = wp_usermeta.user_id WHERE wp_users.user_login LIKE '%".$streamer."%' ORDER BY '%".$streamer."%' ");
+
+    $wpdb->insert('wp_programme', array(
+                'description' => $description,
+                'id_streamer' => $req,
+                 'date' => $date,
+                	'start_end' => $start_end)
+			);            
+	wp_die();
+} 
+
 add_action( 'wp_ajax_update', 'update' );
-add_action( 'wp_ajax_nopriv_update', 'update' ); // This lines it's because we are using AJAX on the FrontEnd.
-
 add_action( 'wp_ajax_getinfo', 'getinfo' );
-
-//wp_localize_script (  'my_action' ,  'ajaxurl' , array (  'ajaxurl'  => admin_url (   'admin-ajax.php'  )  )  );
 
 function update(){	
 	if (isset($_POST['target']) 
@@ -310,34 +364,10 @@ function update(){
 			$response->valid = false;
 			$response->error = "Erreur dans le formulaire";
 			echo (json_encode($response));							
-	}		
-	/*} else {
-		$id = $_POST['pk'];
-		$data_edited = $_POST['value'];
-		$sql = $_POST['sql'];
-		    
-		     Check submitted value
-		    
-		   if(!is_null($id))
-		    {
-		    	global $wpdb;
-		               // $wpdb->insert('events', array(
-						//	'id' => '20',
-						//	'description' => $description,
-						//	'id_streamer' => $id_streamer,
-		                 //   'date' => '2016-07-10')
-					//);
-
-				$wpdb->update('events', array($sql => $data_edited), array("id" => $id));
-
-			}
-		die();
-		echo ("other");
-	}*/
+	}
 
 	wp_die();
 }
-
 
 function getinfo(){	
 	if (isset($_POST['target']) 
@@ -378,41 +408,16 @@ function getinfo(){
 			$response->error = "Erreur dans le formulaire";
 			echo (json_encode($response));							
 	}		
-	/*} else {
-		$id = $_POST['pk'];
-		$data_edited = $_POST['value'];
-		$sql = $_POST['sql'];
-		    
-		     Check submitted value
-		    
-		   if(!is_null($id))
-		    {
-		    	global $wpdb;
-		               // $wpdb->insert('events', array(
-						//	'id' => '20',
-						//	'description' => $description,
-						//	'id_streamer' => $id_streamer,
-		                 //   'date' => '2016-07-10')
-					//);
-
-				$wpdb->update('events', array($sql => $data_edited), array("id" => $id));
-
-			}
-		die();
-		echo ("other");
-	}*/
 
 	wp_die();
 }
 
-
 add_filter("login_redirect", "gkp_subscriber_login_redirect", 10, 3);
 function gkp_subscriber_login_redirect($redirect_to, $request, $user) {
 
-  if(is_array($user->roles))
-      if(in_array('administrator', $user->roles)) return site_url('/wp-admin/');
-
-  return home_url();
+	if(is_array($user->roles))
+		if(in_array('administrator', $user->roles)) return site_url('/wp-admin/');
+	return home_url();
 }
 
 function my_new_contactmethods( $contactmethods ) {
@@ -438,12 +443,96 @@ function redirect_non_authorized_user() {
 	}
 }
 
-
 /*-------------------------------------------------------------------------------
-	Enlever la barre de connexion wordpress
+	Recherche
 -------------------------------------------------------------------------------*/
 
-function my_function_admin_bar(){
-    return false;
+add_action( 'pre_get_posts', function( $query ) {
+
+  // Check that it is the query we want to change: front-end search query
+    if( $query->is_main_query() && ! is_admin() && $query->is_search() ) {
+
+        // Change the query parameters
+        $query->set( 'posts_per_page', 10 );
+
+    }
+
+} );
+
+function numeric_posts_nav() {
+
+	if( is_singular() )
+		return;
+
+	global $wp_query;
+
+	/** Stop execution if there's only 1 page */
+	if( $wp_query->max_num_pages <= 1 )
+		return;
+
+	$paged = get_query_var( 'paged' ) ? absint( get_query_var( 'paged' ) ) : 1;
+	$max   = intval( $wp_query->max_num_pages );
+
+	/**	Add current page to the array */
+	if ( $paged >= 1 )
+		$links[] = $paged;
+
+	/**	Add the pages around the current page to the array */
+	if ( $paged >= 3 ) {
+		$links[] = $paged - 1;
+		$links[] = $paged - 2;
+	}
+
+	if ( ( $paged + 2 ) <= $max ) {
+		$links[] = $paged + 2;
+		$links[] = $paged + 1;
+	}
+
+	echo '<div class="navigation"><ul>' . "\n";
+
+	/**	Previous Post Link */
+	if ( get_previous_posts_link() )
+		printf( '<li>%s</li>' . "\n", get_previous_posts_link() );
+
+	/**	Link to first page, plus ellipses if necessary */
+	if ( ! in_array( 1, $links ) ) {
+		$class = 1 == $paged ? ' class="active"' : '';
+
+		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( 1 ) ), '1' );
+
+		if ( ! in_array( 2, $links ) )
+			echo '<li>…</li>';
+	}
+
+	/**	Link to current page, plus 2 pages in either direction if necessary */
+	sort( $links );
+	foreach ( (array) $links as $link ) {
+		$class = $paged == $link ? ' class="active"' : '';
+		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $link ) ), $link );
+	}
+
+	/**	Link to last page, plus ellipses if necessary */
+	if ( ! in_array( $max, $links ) ) {
+		if ( ! in_array( $max - 1, $links ) )
+			echo '<li>…</li>' . "\n";
+
+		$class = $paged == $max ? ' class="active"' : '';
+		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $max ) ), $max );
+	}
+
+	/**	Next Post Link */
+	if ( get_next_posts_link() )
+		printf( '<li>%s</li>' . "\n", get_next_posts_link() );
+
+	echo '</ul></div>' . "\n";
+
 }
-add_filter( 'show_admin_bar' , 'my_function_admin_bar');
+
+
+/*-------------------------------------------------------------------------------
+	Fix to URL Problem : #038; replaces & and breaks the navigation
+-------------------------------------------------------------------------------*/
+function workaroundpaginationampersandbug($link) {
+	return str_replace('#038;', '&', $link);
+}
+add_filter('paginate_links', 'workaroundpaginationampersandbug');

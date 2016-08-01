@@ -1,94 +1,13 @@
-<?php
-/**
- * The header for our theme.
- *
- * This is the template that displays all of the <head> section and everything up until <div id="content">
- *
- * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
- *
- * @package pgm
- */
-
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="profile" href="http://gmpg.org/xfn/11">
 <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
-
 <?php wp_head(); ?>
-
 <?php do_shortcode('[contentblock id=1]'); ?>
-
-<script type="text/javascript">
-$(document).ready(function() {
-  // Custom 
-  var stickyToggle = function(sticky, stickyWrapper, scrollElement) {
-    var stickyHeight = sticky.outerHeight();
-    var stickyTop = stickyWrapper.offset().top;
-    if (scrollElement.scrollTop() >= stickyTop){
-      stickyWrapper.height(stickyHeight);
-      sticky.addClass("is-sticky");
-    }
-    else{
-      sticky.removeClass("is-sticky");
-      stickyWrapper.height('auto');
-    }
-  };
-  
-  // Find all data-toggle="sticky-onscroll" elements
-  $('[data-toggle="sticky-onscroll"]').each(function() {
-    var sticky = $(this);
-    var stickyWrapper = $('<div>').addClass('sticky-wrapper'); // insert hidden element to maintain actual top offset on page
-    sticky.before(stickyWrapper);
-    sticky.addClass('sticky');
-    
-    // Scroll & resize events
-    $(window).on('scroll.sticky-onscroll resize.sticky-onscroll', function() {
-      stickyToggle(sticky, stickyWrapper, $(this));
-    });
-    
-    // On page load
-    stickyToggle(sticky, stickyWrapper, $(window));
-  });
-});
-$(document).ready(function(){
-      $('body').append('<div id="toTop" class="btn btn-info"><i class="fa fa-arrow-up"></i>Back to Top</div>');
-    	$(window).scroll(function () {
-			if ($(this).scrollTop() != 0) {
-				$('#toTop').fadeIn();
-			} else {
-				$('#toTop').fadeOut();
-			}
-		}); 
-    $('#toTop').click(function(){
-        $("html, body").animate({ scrollTop: 0 }, 600);
-        return false;
-    });
-});
-</script>
-
-<style type="text/css"> 
-.sticky.is-sticky {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 1000;
-  width: 100%;
-}
-#toTop{
-	position: fixed;
-	bottom: 95px;
-	right: 40px;
-	cursor: pointer;
-	display: none;
-}
-#toTop .fa {margin-right: 5px;}
-</style>
 </head>
-
 <body <?php body_class( array( "fluid-background" ) ); ?>>
   <div class="background">
   
@@ -106,14 +25,22 @@ $(document).ready(function(){
         </div>
 
         <div id="logindiv" class="col-md-2 btn-group box-login">
-        <?php if (is_user_logged_in()) { ?>
-          
-          <a href="<?php echo wp_logout_url( home_url() ); ?>" class="btn btn-sample btn-border btn-sample-login" id="logout">
-            <span class="glyphicon glyphicon-log-in"></span> logout
-          </a>
-          <a href="<?php echo home_url(); ?>/dashboard" class="btn btn-sample btn-border btn-sample-register" href="#">
-            <span class="glyphicon glyphicon-user"></span> Dashboard
-          </a>
+         <?php if (is_user_logged_in()) { ?>
+          <div>
+            <a href="<?php echo wp_logout_url( home_url() ); ?>" class="btn btn-sample btn-border btn-sample-login" id="logout">
+              <span class="glyphicon glyphicon-log-in"></span>
+            </a>
+            <a href="<?php echo home_url(); ?>/dashboard" class="btn btn-sample btn-border btn-sample-register" href="#">
+              <span class="glyphicon glyphicon-user"></span> <?php echo wp_get_current_user()->display_name; ?>
+            </a>
+          </div>
+          <?php if (current_user_can('manage_options')) { ?>
+          <div>
+            <a href="<?php echo home_url(); ?>/wp-admin" class="btn btn-sample btn-border btn-sample-admin" href="#">
+              <span class="glyphicon glyphicon-user"></span> Dashboard du site
+            </a>
+          </div>
+          <?php }?>
          
         <?php } else { get_template_part('ajax', 'auth'); ?>
                       
@@ -127,8 +54,8 @@ $(document).ready(function(){
         </div>        
       </div>
     </header> 
-	
-	    <div data-toggle="sticky-onscroll" class="container-fluid navbar-inverse">
+  
+      <div data-toggle="sticky-onscroll" class="container-fluid navbar-inverse">
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2">
           <nav class="navbar" id="main-sticky">
@@ -138,10 +65,10 @@ $(document).ready(function(){
                   <a href="<?php echo home_url(); ?>"><img src="<?php echo get_bloginfo('template_directory');?>/images/home.png" alt=""></a>
                 </li>
                 <li class="divider">
-                  <a href="programme.html">programme</a>
+                  <a href="<?php echo home_url(); ?>/planning/">programme</a>
                 </li>
                 <li class="divider">
-                  <a href="articles.html">actualités</a>
+                  <a href="<?php echo home_url(); ?>/actualites/">actualités</a>
                 </li>
               </ul>
               <ul class="nav navbar-nav navbar-right">

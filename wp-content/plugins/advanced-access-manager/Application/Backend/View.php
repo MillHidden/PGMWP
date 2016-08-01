@@ -78,6 +78,26 @@ class AAM_Backend_View {
 
         return $content;
     }
+    
+    /**
+     * Run the Manager
+     *
+     * @return string
+     *
+     * @access public
+     */
+    public function renderMetabox() {
+        global $post;
+        
+        $url = admin_url('admin.php?page=aam&oid=' . $post->ID . '#post');
+        
+        ob_start();
+        require_once(dirname(__FILE__) . '/phtml/metabox.phtml');
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return $content;
+    }
 
     /**
      * Process the ajax call

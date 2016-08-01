@@ -422,6 +422,7 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
 
 .aam-block {
     display: block;
+    letter-spacing: 1.5px;
 }
 
 .aam-lock {
@@ -432,10 +433,6 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
     height: 100%;
     background-color: rgba(169, 68, 66, 0.2);
     z-index: 9999;
-}
-
-.aam-block {
-    display: block;
 }
 
 .panel-title {
@@ -647,6 +644,10 @@ input[type="checkbox"]:focus, input[type="radio"]:focus {
     font-size: 1.2em; 
     font-weight: 700; 
     display: block;
+}
+
+.aam-setting-title small {
+    font-size: 0.7em;
 }
 
 .aam-setting-description, .aam-extension-description {

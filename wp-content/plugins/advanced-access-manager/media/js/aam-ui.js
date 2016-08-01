@@ -1260,6 +1260,12 @@
                 $(btn).attr('class', 'aam-row-action text-info icon-cog');
             }
         });
+        
+        //update dynamic labels
+        var marker = '<b>' + $('.aam-post-breadcrumb span').text() + '</b>';
+        $('[data-dynamic-post-label]').each(function() {
+            $(this).html($(this).attr('data-dynamic-post-label').replace(/%s/g, marker));
+        });
     }
 
     /**
@@ -1301,7 +1307,7 @@
 
         return result;
     }
-
+    
     /**
      * 
      * @returns {undefined}
@@ -1316,6 +1322,7 @@
             ordering: false,
             pagingType: 'simple',
             serverSide: false,
+            stateSave: true,
             ajax: {
                 url: aamLocal.ajaxurl,
                 type: 'POST',
@@ -1393,43 +1400,6 @@
                     $('td:eq(1)', row).html(data[3]);
                 }
 
-                //add breadcrumb but only if not a type
-                if (data[2] !== 'type') {
-                    queue.push(function () {
-                        $.ajax(aamLocal.ajaxurl, {
-                            type: 'POST',
-                            dataType: 'json',
-                            data: {
-                                action: 'aam',
-                                sub_action: 'Post.getBreadcrumb',
-                                _ajax_nonce: aamLocal.nonce,
-                                type: data[2],
-                                id: data[0]
-                            },
-                            success: function (response) {
-                                if (response.status === 'success') {
-                                    $('td:eq(1) span', row).html(
-                                            response.breadcrumb
-                                            );
-                                }
-                            },
-                            error: function () {
-                                $('td:eq(1) span', row).html(aam.__('Failed'));
-                            },
-                            complete: function () {
-                                if (queue.length) {
-                                    queue.pop().call();
-                                }
-                            }
-                        });
-                    });
-                    $('td:eq(1)', row).append(
-                            $('<span/>', {'class': 'aam-row-subtitle'}).text(
-                            aam.__('Loading...')
-                            )
-                            );
-                }
-
                 //update the actions
                 var actions = data[4].split(',');
 
@@ -1446,18 +1416,20 @@
                                 'data-toggle': "tooltip",
                                 'title': aam.__('Drill-Down')
                             }));
+                            $('.tooltip').remove();
                             break;
                             
                         case 'manage':
                             $(container).append($('<i/>', {
                                 'class': 'aam-row-action text-info icon-cog'
                             }).bind('click', function () {
-                                loadAccessForm(data[2], data[0], $(this));
                                 addBreadcrumbLevel('edit', data[2], data[3]);
+                                loadAccessForm(data[2], data[0], $(this));
                             }).attr({
                                 'data-toggle': "tooltip",
                                 'title': aam.__('Manage Access')
                             }));
+                            $('.tooltip').remove();
                             break;
 
                         case 'edit' :
@@ -1539,6 +1511,11 @@
             $('.aam-post-breadcrumb span:last').remove();
             $('#post-overwritten, #post-inherited').addClass('hidden');
         });
+        
+        //load referenced post
+        if ($('#load-post').val()) {
+            loadAccessForm('post', $('#load-post').val());
+        }
     }
 
     aam.addHook('init', initialize);
@@ -1753,11 +1730,16 @@
             });
         });
         
+        var item = $('li:eq(0)', '#feature-list');
+        
         if (location.hash !== '') {
-            $('li[data-feature="' + location.hash.substr(1) + '"]', '#feature-list').trigger('click');
-        } else {
-            $('li:eq(0)', '#feature-list').trigger('click');
+            var hash = location.hash.substr(1);
+            if ($('li[data-feature="' + hash + '"]', '#feature-list').length) {
+                item = $('li[data-feature="' + hash + '"]', '#feature-list');
+            }
         }
+        
+        item.trigger('click');
     }
 
     /**
@@ -1765,6 +1747,9 @@
      * @returns {undefined}
      */
     aam.fetchContent = function () {
+        //referred object ID like post, page or any custom post type
+        var object = window.location.search.match(/&oid\=([^&]*)/);
+        
         $.ajax(aamLocal.url.site, {
             type: 'POST',
             dataType: 'html',
@@ -1773,12 +1758,13 @@
                 action: 'aamc',
                 _ajax_nonce: aamLocal.nonce,
                 subject: this.getSubject().type,
-                subjectId: this.getSubject().id
+                subjectId: this.getSubject().id,
+                oid: object ? object[1] : null
             },
             beforeSend: function () {
                 var loader = $('<div/>', {'class': 'aam-loading'}).html(
                         '<i class="icon-spin4 animate-spin"></i>'
-                        );
+                );
                 $('#aam-content').html(loader);
             },
             success: function (response) {

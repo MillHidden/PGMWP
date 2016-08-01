@@ -1,70 +1,92 @@
 <?php
 /**
- * The Template for displaying all single posts.
+ * ** PAGE ARTICLE **
  *
- * This theme was generated with Lubith - The Wordpress Theme Generator: http://www.lubith.com
- * It is based on Twenty Ten (Wordpress 3.x default theme).
- *
+ * @link http://www.puregamemedia.fr/
+ * @title Page article seul
  */
+
+$category = get_the_category();
+$id = get_the_ID();
+$query_single = new WP_Query('p='.$id);
+$meta_value = get_post_meta( $id, '_amt_description', true );	
+$title_value = get_post_meta( $id, '_amt_title', true );				
+$author_id = $post->post_author;
+$img_url = get_user_meta($author_id, 'user_avatar', true); 
 ?>
-		<div class="container">
-			<div id="content" role="main">
+<?php if ( $query_single->have_posts() ) : while ( $query_single->have_posts() ) : $query_single->the_post(); ?>	
 
-<?php  if ( have_posts() ) while ( have_posts() ) : the_post(); ?>
-				
-				<!--<div id="nav-above" class="navigation">
-					<div class="nav-previous"><?php previous_post_link( '%link', '<span class="meta-nav">' . _x( '&larr;', 'Previous post link', 'twentyten' ) . '</span> %title' ); ?></div>
-					<div class="nav-next"><?php next_post_link( '%link', '%title <span class="meta-nav">' . _x( '&rarr;', 'Next post link', 'twentyten' ) . '</span>' ); ?></div>
-				</div>--><!-- #nav-above -->
-
-				<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-					<h1 class="entry-title"><?php the_title(); ?></h1>
-
-					<div class="entry-meta">
-						<?php pgm_posted_on(); ?>
-					</div><!-- .entry-meta -->
-
-					<div class="entry-content">
-						<?php the_content(); ?>
-						<?php wp_link_pages( array( 'before' => '<div class="page-link">' . __( 'Pages:', 'twentyten' ), 'after' => '</div>' ) ); ?>
-					</div><!-- .entry-content -->
-
-<?php if ( get_the_author_meta( 'description' ) ) : // If a user has filled out their description, show a bio on their entries  ?>
-					<div id="entry-author-info">
-						<div id="author-avatar">
-							<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'twentyten_author_bio_avatar_size', 60 ) ); ?>
-						</div><!-- #author-avatar -->
-						<div id="author-description">
-							<h2><?php printf( esc_attr__( 'About %s', 'pgm' ), get_the_author() ); ?></h2>
-							<?php the_author_meta( 'description' ); ?>
-							<div id="author-link">
-								<a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>">
-									<?php printf( __( 'View all posts by %s <span class="meta-nav">&rarr;</span>', 'twentyten' ), get_the_author() ); ?>
-								</a>
-							</div><!-- #author-link	-->
-						</div><!-- #author-description -->
-					</div><!-- #entry-author-info -->
-<?php endif; ?>
-
-					<div class="entry-utility">
-						Posted in: <?php the_category(', '); ?>
-						<?php edit_post_link( __( 'Edit', 'pgm' ), '<span class="edit-link">', '</span>' ); ?>
-					</div><!-- .entry-utility -->
-					<div class="entry-footer"></div>
-				</div><!-- #post-## -->
-
-				<div id="nav-below" class="navigation">
-					<div class="nav-previous"><?php previous_post_link( '%link', '<span class="meta-nav">' . _x( '&larr;', 'Previous post link', 'twentyten' ) . '</span> %title' ); ?></div>
-					<div class="nav-next"><?php next_post_link( '%link', '%title <span class="meta-nav">' . _x( '&rarr;', 'Next post link', 'twentyten' ) . '</span>' ); ?></div>
-				</div><!-- #nav-below -->
-<?php get_related_posts_thumbnails(); ?>
-<div class="dailymotion-widget" data-placement="5737a114a94fba0397edeaef"></div>
-				<?php comments_template( '/pgm/comments.php' );  ?> 
-
-<?php endwhile; // end of the loop. ?>
-
-
-			</div><!-- #content -->
-		</div><!-- .container -->
-
-
+<section id="article" itemscope itemtype="http://schema.org/NewsArticle" itemref="author_box review_box">
+				<ol class="article-top-nav" itemscope itemtype="http://schema.org/BreadcrumbList">
+				  <li itemprop="itemListElement" itemscope
+					  itemtype="http://schema.org/ListItem">
+					<a itemprop="item" href="http://localhost/actualites/">
+					   <span itemprop="name">Actualités</span></a>
+					<meta itemprop="position" content="1" />
+				  </li>
+				  <li itemprop="itemListElement" itemscope
+					  itemtype="http://schema.org/ListItem">
+					<a itemprop="item" href="<?php echo get_category_link($category[0]->cat_ID); ?>">
+										  <span itemprop="name">
+										 <?php echo '<a href="'.get_category_link($category[0]->cat_ID).'">'.$category[0]->cat_name.'</a>'; ?> 
+										  </span></a>
+					<meta itemprop="position" content="2" />
+				  </li>
+				  <li itemprop="itemListElement" itemscope
+					  itemtype="http://schema.org/ListItem">
+					<a itemprop="item" href="<?php echo get_permalink(); ?>">
+						<span itemprop="name"><?php the_title(); ?></span></a>
+					<meta itemprop="position" content="3" />
+				  </li>
+				</ol>
+				<div class="" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+					<div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+					  <meta itemprop="url" content="wp-content/uploads/logo/PGM-150x150.png">
+					  <meta itemprop="width" content="150">
+					  <meta itemprop="height" content="60">
+					</div>
+					<meta itemprop="name" content="PureGameMedia">
+				  </div>				
+				<header class="photo" style="width:100%">	
+					 <h1 itemprop="name"><a href="<?php echo get_permalink(); ?>" itemprop="mainEntityOfPage"><?php the_title(); ?></a></h1>
+					 <p class="article-top-desc" itemprop="headline"><?php echo $meta_value; ?></p>
+                      <!--<p class="article-top-desc" itemprop="description">PureGameMedia souhaite développer son équipe rédactionelle.</p>   --> 
+					 <?php the_post_thumbnail( 'image-size', array( 'itemprop' => 'Photo',  'style' => 'width: inherit') ); ?>
+					<div class="col-md-2 article-cat text-center">	
+                            <?php 
+							echo '<img src="'.z_taxonomy_image_url($category[0]->term_id).'" /> <span itemprop="articleSection"><a href="'.get_category_link($category[0]->cat_ID).'">'.$category[0]->cat_name.'</a></span>'; 
+							?>
+					</div>
+				</header>
+				<hr>
+				<aside id="author_box" class="pull-left text-left">
+					 <img class="img-circle pull-left" width='50px' alt="Avatar de <?php get_the_author(); ?>" src="<?php echo '../wp-content/uploads'.$img_url; ?>" />
+						<p class="">
+						Publié le <time itemprop="datePublished" content="<?php the_time('Y:d:m'); ?>T<?php the_time('H:i'); ?>Z"><?php the_time('d/m/Y'); ?> - Par 
+                         <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><?php echo get_the_author(); ?></span></span></br>
+						</p>
+						<p class="article-top-coment "><span class="glyphicon glyphicon-comment"></span> <meta itemprop="interactionCount" content="13 Usercomments"><?php comments_number('0', '1', '%'); ?> commentaires sur l'article</p>
+				</aside>					
+				<div class="text-right">Partager sur : <div class="addthis_sharing_toolbox"></div></div>
+				<hr class="hr-top clear">
+				<div id="article-inside" itemprop="articleBody">
+					<?php echo the_content(); ?>		
+				</div>
+				<hr>
+				<aside id="author_box" class="pull-left text-left">
+						<img class="img-circle pull-left" width='50px' alt="Avatar de <?php get_the_author(); ?>" src="<?php echo '../wp-content/uploads'.$img_url; ?>" />
+						<p class="">
+						Publié le <time itemprop="datePublished" content="<?php the_time('Y:d:m'); ?>T<?php the_time('H:i'); ?>Z"><?php the_time('d/m/Y'); ?> - Par 
+                         <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><?php echo get_the_author(); ?></span></span></br>
+						</p>
+						<p class="article-top-coment "><span class="glyphicon glyphicon-comment"></span> <meta itemprop="interactionCount" content="13 Usercomments"><?php comments_number('0', '1', '%'); ?> commentaires sur l'article</p>
+				</aside>					
+				<div class="text-right">Partager sur : <div class="addthis_sharing_toolbox"></div></div>				
+			</section>
+			<hr>
+			<h2 class="related_articles">Articles conseillés</h2>
+			<?php get_related_posts_thumbnails(); ?>			
+			<div class="dailymotion-widget" data-placement="5737a114a94fba0397edeaef"></div><script>(function(w,d,s,u,n,e,c){w.PXLObject = n; w[n] = w[n] || function(){(w[n].q = w[n].q || []).push(arguments);};w[n].l = 1 * new Date();e = d.createElement(s); e.async = 1; e.src = u;c = d.getElementsByTagName(s)[0]; c.parentNode.insertBefore(e,c);})(window, document, "script", "//api.dmcdn.net/pxl/client.js", "pxl");</script>
+			<hr>
+			<?php comments_template(); ?>
+<?php endwhile; endif; ?>

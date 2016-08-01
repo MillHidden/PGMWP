@@ -1,8 +1,17 @@
-<?php get_header(); ?>
-	
-	<br><br>
-	<div class="align-center">
-		You can power this archive with LC by setting the page by in WP admin > Live Composer > Archives &amp; Search
-	</div>
+<?php
+/*
+ * Template Name: Page des archives
+ */
 
-<?php get_footer(); ?>
+get_template_part( 'template-parts/content', 'header' );
+
+    get_template_part( 'template-parts/content', 'left' );
+
+         get_template_part( 'template-parts/page/content', 'archives' );
+
+    get_template_part( 'template-parts/content', 'right' );
+
+get_template_part( 'template-parts/content', 'footer' );
+
+// INCLURE SEULEMENT POUR LA BARRE ADMIN TOP HEADER
+get_footer();

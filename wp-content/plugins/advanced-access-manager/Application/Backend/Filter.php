@@ -38,6 +38,9 @@ class AAM_Backend_Filter {
         //manager WordPress metaboxes
         add_action("in_admin_header", array($this, 'metaboxes'), 999);
         
+        //control admin area
+        add_action('admin_init', array($this, 'adminInit'));
+        
         //post restrictions
         add_filter('page_row_actions', array($this, 'postRowActions'), 10, 2);
         add_filter('post_row_actions', array($this, 'postRowActions'), 10, 2);
@@ -61,6 +64,41 @@ class AAM_Backend_Filter {
         //screen options & contextual help hooks
         add_filter('screen_options_show_screen', array($this, 'screenOptions'));
         add_filter('contextual_help', array($this, 'helpOptions'), 10, 3);
+    }
+    
+    /**
+     * Control Admin Area access
+     *
+     * @return void
+     *
+     * @access public
+     * @since  3.3
+     */
+    public function adminInit() {
+        global $plugin_page;
+
+        //compile menu
+        if (empty($plugin_page)){
+            $menu     = basename(AAM_Core_Request::server('SCRIPT_NAME'));
+            
+            $taxonomy = AAM_Core_Request::get('taxonomy');
+            $postType = AAM_Core_Request::get('post_type');
+            $page     = AAM_Core_Request::get('page');
+            
+            if (!empty($taxonomy)) {
+                $menu .= '?taxonomy=' . $taxonomy;
+            } elseif (!empty($postType)) {
+                $menu .= '?post_type=' . $postType;
+            } elseif (!empty($page)) {
+                $menu .= '?page=' . $page;
+            }
+        } else {
+            $menu = $plugin_page;
+        }
+
+        if (AAM::getUser()->getObject('menu')->has($menu)) {
+            AAM_Core_API::reject('backend');
+        }
     }
 
     /**
@@ -98,10 +136,7 @@ class AAM_Backend_Filter {
             $screen = '';
         }
 
-        if (AAM_Core_Request::get('init') == 'metabox') {
-            $model = new AAM_Backend_Feature_Metabox;
-            $model->initialize($screen);
-        } else {
+        if (AAM_Core_Request::get('init') != 'metabox') {
             AAM::getUser()->getObject('metabox')->filterBackend($screen);
         }
     }

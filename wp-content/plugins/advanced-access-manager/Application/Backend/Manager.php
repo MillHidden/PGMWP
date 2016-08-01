@@ -48,8 +48,15 @@ class AAM_Backend_Manager {
         //manage access action to the user list
         add_filter('user_row_actions', array($this, 'userActions'), 10, 2);
         
-        //control admin area
-        add_action('admin_init', array($this, 'adminInit'));
+        //register custom access control metabox
+        add_action('add_meta_boxes', array($this, 'metabox'));
+        
+        //manager WordPress metaboxes
+        add_action("in_admin_header", array($this, 'initMetaboxes'), 999);
+        
+        //extend post inline actions
+        add_filter('page_row_actions', array($this, 'postRowActions'), 10, 2);
+        add_filter('post_row_actions', array($this, 'postRowActions'), 10, 2);
         
         //check extension version
         $this->checkExtensionList();
@@ -57,41 +64,6 @@ class AAM_Backend_Manager {
         //register backend hooks and filters
         if (AAM_Core_Config::get('backend-access-control', true)) {
             AAM_Backend_Filter::register();
-        }
-    }
-    
-    /**
-     * Control Admin Area access
-     *
-     * @return void
-     *
-     * @access public
-     * @since  3.3
-     */
-    public function adminInit() {
-        global $plugin_page;
-
-        //compile menu
-        if (empty($plugin_page)){
-            $menu     = basename(AAM_Core_Request::server('SCRIPT_NAME'));
-            
-            $taxonomy = AAM_Core_Request::get('taxonomy');
-            $postType = AAM_Core_Request::get('post_type');
-            $page     = AAM_Core_Request::get('page');
-            
-            if (!empty($taxonomy)) {
-                $menu .= '?taxonomy=' . $taxonomy;
-            } elseif (!empty($postType)) {
-                $menu .= '?post_type=' . $postType;
-            } elseif (!empty($page)) {
-                $menu .= '?page=' . $page;
-            }
-        } else {
-            $menu = $plugin_page;
-        }
-
-        if (AAM::getUser()->getObject('menu')->has($menu)) {
-            AAM_Core_API::reject('backend');
         }
     }
     
@@ -142,6 +114,53 @@ class AAM_Backend_Manager {
     }
     
     /**
+     * 
+     */
+    public function metabox() {
+        add_meta_box(
+                'aam-acceess-control', 
+                __('Access Manager', AAM_KEY), 
+                array($this, 'renderMetabox'),
+                null,
+                'side',
+                'high'
+        );
+    }
+    
+    /**
+     * 
+     * @global type $post
+     */
+    public function renderMetabox() {
+        echo AAM_Backend_View::getInstance()->renderMetabox();
+    }
+    
+    /**
+     * Hanlde Metabox initialization process
+     *
+     * @return void
+     *
+     * @access public
+     */
+    public function initMetaboxes() {
+        global $post;
+
+        if (AAM_Core_Request::get('init') == 'metabox') {
+            //make sure that nobody is playing with screen options
+            if ($post instanceof WP_Post) {
+                $screen = $post->post_type;
+            } elseif ($screen_object = get_current_screen()) {
+                $screen = $screen_object->id;
+            } else {
+                $screen = '';
+            }
+        
+            $model = new AAM_Backend_Feature_Metabox;
+            $model->initialize($screen);
+        }
+    }
+    
+    /**
      * Add extra column to search in for User search
      *
      * @param array $columns
@@ -154,6 +173,25 @@ class AAM_Backend_Manager {
         $columns[] = 'display_name';
 
         return $columns;
+    }
+    
+    /**
+     * 
+     * @param type $actions
+     * @param type $post
+     * @return string
+     */
+    public function postRowActions($actions, $post) {
+        $cap = AAM_Core_Config::get('page.capability', 'administrator');
+        
+        if (AAM::getUser()->hasCapability($cap)) {
+            $url = admin_url('admin.php?page=aam&oid=' . $post->ID . '#post');
+
+            $actions['aam']  = '<a href="' . $url . '" target="_blank">';
+            $actions['aam'] .= __('Access', AAM_KEY) . '</a>';
+        }
+        
+        return $actions;
     }
     
     /**
@@ -174,8 +212,8 @@ class AAM_Backend_Manager {
         if (current_user_can($cap, $user->ID)) {
             $url = admin_url('admin.php?page=aam&user=' . $user->ID);
 
-            $actions['aam']  = '<a href="' . $url . '">';
-            $actions['aam'] .= __('AAM', AAM_KEY) . '</a>';
+            $actions['aam']  = '<a href="' . $url . '" target="_blank">';
+            $actions['aam'] .= __('Access', AAM_KEY) . '</a>';
         }
         
         return $actions;
@@ -232,8 +270,11 @@ class AAM_Backend_Manager {
     }
     
     /**
+     * Get current subject
      * 
-     * @return type
+     * @return stdClass
+     * 
+     * @access protected
      */
     protected function getCurrentSubject() {
         $userId  = AAM_Core_Request::get('user');
